@@ -18,57 +18,37 @@ use constant PROGRAM_NAME_LONG       => 'Calculate MLST profile for a sequence o
 use constant VERSION                 => '1.8';
 
 #Global variables
-my $BLASTALL;
-my $FORMATDB;
 my $MLST_DB;
 my $mlst_scheme_file;
+my $BLAST;
+my $BLASTALL;
+my $FORMATDB;
 my ($Help, $Organism, $InFile, $dir);
 my $IFormat = "fasta";
 my $OFormat = "ST";
 my %ARGV    = ('-p' => 'blastn', '-a' => '5' , '-F' => 'F');
 
-#Getting global variables from the command line
-&commandline_parsing();
-
-## PATHS
-#my $BLASTALL  = "/usr/local/bin/blastall";
-#my $FORMATDB  = "/usr/local/bin/formatdb";
-#my $MLST_DB   = "/home/data1/services/MLST/database"; #weekly updated DB containing mlst alleles
-##my $MLST_DB   = "/home/data1/services/MLST/database_archive/database_140923"; #weekly updated DB containing mlst alleles
-#my $mlst_scheme_file = "/home/data1/services/MLST/mlst_schemes2"; # tab separated list containing the mlst_profile -> organism name conversion
-
 # REGULAR EXPRESSION PATTERNS
 my $REG_EXP   = "([_]?[a-zA-Z0-9]+[_]?)([-_])([0-9]+)";              # Regular expression for matching allele names. $1 should match gene name, $2 the connector (- or _), $3 the allele number.
 
-#&GetOptions (
-#   "d=s"     => \$Organism,
-#   "i=s"     => \$InFile,
-#   "I=s"     => \$IFormat,
-#   "O=s"     => \$OFormat,
-#   "R=s"     => \$runroot,
-#   "h|help"  => \$Help               # Prints the help text
-#);
+#Getting global variables from the command line
+&commandline_parsing();
 
-if (defined $Help || not defined $Organism || not defined $InFile || not defined $dir) {
+if (defined $Help || not defined $Organism || not defined $InFile) {
    print_help();
    exit;
 }
 
 #If there are not given a path to the different databases and BLAST the program assume that the files are located as downloaded from the webside
-if (not defined $BLASTALL or not defined $FORMATDB or not defined $MLST_DB or not defined $mlst_scheme_file) {
+if (not defined $BLASTALL or not defined $FORMATDB or not defined $MLST_DB or not defined $mlst_scheme_file or not defined $dir) {
    $BLASTALL = "blast-2.2.26/bin/blastall";
    $FORMATDB = "blast-2.2.26/bin/formatdb";
    $MLST_DB = "database";
-   $mlst_scheme_file = "mlst_schemes";
+   $mlst_scheme_file = "database/mlst_schemes";
+   mkdir "output";
+   $dir = "output";
 }
 
-#DEBUG
-#print STDERR "Blast:$BLASTALL\nFormat:$FORMATDB\nDB:$MLST_DB\nScheme:$mlst_scheme_file\nHelp:$Help\nOrg:$Organism\nfile:$InFile\nOut:$dir\n";
-#print STDERR @ARGV. "\n";
-
-#From old script
-#my %Temp = @ARGV;
-#@ARGV{keys %Temp} = values %Temp;
 
 # --------------------------------------------------------------------
 # %% Main Program %%
@@ -479,75 +459,6 @@ push(@RESULTS_AND_SETTINGS_ARRAY, $Organism);
 push(@RESULTS_AND_SETTINGS_ARRAY, $mlstProfiles{$Organism});
 push(@RESULTS_AND_SETTINGS_ARRAY, $InFile);
 
-=pod
-                GENE IDENTITY % Allele Length/HSP GAPS MATCH
-                GAPA 100%       450/450           0    GAPA_1
-                INFB 100%       318/318           0    INFB_1
-                MDH  100%       477/477           0    MDH_1
-                PGI  100%       432/432           0    PGI_1
-                PHOE 100%       420/258           0    PHOE_1
-                RPOB 100%       501/501           0    RPOB_1
-                TONB 100%       414/414           0    TONB_1
-=cut
-
-####### PRINT THE COMPLETE OUTPUT ############
-=pod
-print "MLST Typing Results\n\n";
-print "Sequence Type:\t".$RESULTS_AND_SETTINGS_ARRAY[0]."\n\n";
-print "SETTINGS:\n\n";
-print "Organism:\t".$RESULTS_AND_SETTINGS_ARRAY[2]."\n";
-print "MLST Profiles:\t".$RESULTS_AND_SETTINGS_ARRAY[1]."\n";
-print "Input File:\t".$RESULTS_AND_SETTINGS_ARRAY[3]."\n";
-
-print "\nGENE\tIDENTITY\tAllele Length/HSP\tGAPS\tMATCH\n";
-foreach my $key (sort keys %GENE_RESULTS_HASH) {
-    #print "\t".$key."\n";
-    my $array = $GENE_RESULTS_HASH{$key};
-    print  $key."\t".@$array[1]."%\t".@$array[2]."/".@$array[3]."\t".@$array[4]."\t".@$array[5]."\n";
-    #foreach my $key2 (@$array){
-    # print $key2."\n";
-    #}
- }
-
-print "\n\n";
-foreach my $key (sort keys %GENE_RESULTS_HASH) {
-    #print "\n".$key."\t";
-    my $array = $GENE_RESULTS_HASH{$key};
-    #foreach my $key2 (@$array){
-    # print $key2." ";
-    #}
-    my $outStr = $key;
-    if (@$array[0] eq "perfect" ){
-   $outStr = $outStr.": PERFECT, ";
-    }
-    elsif (@$array[0] eq "warning" ){
-   $outStr = $outStr.": WARNING, ";
-    }
-    my $identity =@$array[1];
-    my $allLen =@$array[2];
-    my $hspLen =@$array[3];
-    my $gaps =@$array[4];
-    my $matchAll =@$array[5];
-    $outStr = $outStr."Identity: ".@$array[1]."%, Length/HSP: ".@$array[2]."/".@$array[3].", Gaps: ".@$array[4].", ".@$array[5]." is the best match for ".$key;
-    print "\n".$outStr;
-
-    print "\n";
-    #now print the alleles
-    my $queryArray = $GENE_ALIGN_QUERY_HASH{$key};
-    my $homoArray = $GENE_ALIGN_HOMO_HASH{$key};
-    my $hitArray = $GENE_ALIGN_HIT_HASH{$key};
-    #for my $hit (@$hitArray){
-    #   print "MLST allele seq: ".$hit."\n";
-    #}
-    for (my $i=0; $i < scalar(@$hitArray); $i++){
-   print "MLST allele seq: ".@$queryArray[$i]."\n";
-   print "                 ".@$homoArray[$i]."\n";
-   print "Hit in genome:   ".@$hitArray[$i]."\n\n";
-    }
- }#end foreach
-=cut
-#############################################################
-
 #### TXT PRINTING ####
 print_txt_results(\@RESULTS_AND_SETTINGS_ARRAY, \%GENE_RESULTS_HASH, \%GENE_ALIGN_QUERY_HASH, \%GENE_ALIGN_HOMO_HASH, \%GENE_ALIGN_HIT_HASH);
 
@@ -567,35 +478,28 @@ sub commandline_parsing {
     while (scalar @ARGV) {
         if ($ARGV[0] =~ m/^-d$/) {
             $MLST_DB = $ARGV[1];
+            $mlst_scheme_file = "$MLST_DB/mlst_schemes";
             shift @ARGV;
             shift @ARGV;
         }
         elsif ($ARGV[0] =~ m/^-blast$/) {
-            $BLASTALL = $ARGV[1];
+            $BLAST = $ARGV[1];
+            $BLASTALL = "$BLAST/bin/blastall";
+            $FORMATDB = "$BLAST/bin/formatdb";
             shift @ARGV;
             shift @ARGV;
         }
-        elsif ($ARGV[0] =~ m/^-format$/) {
-            $FORMATDB = $ARGV[1];
-            shift @ARGV;
-            shift @ARGV;
-        }
-        elsif ($ARGV[0] =~ m/^-sc$/) {
-            $mlst_scheme_file = $ARGV[1];
-            shift @ARGV;
-            shift @ARGV;
-        }
-        elsif ($ARGV[0] =~ m/^-o$/) {
+        elsif ($ARGV[0] =~ m/^-s$/) {
             $Organism = $ARGV[1];
             shift @ARGV;
             shift @ARGV;
         }
-        elsif ($ARGV[0] =~ m/^-file$/) {
+        elsif ($ARGV[0] =~ m/^-i$/) {
             $InFile = $ARGV[1];
             shift @ARGV;
             shift @ARGV;
         }
-        elsif ($ARGV[0] =~ m/^-outdir$/) {
+        elsif ($ARGV[0] =~ m/^-o$/) {
             $dir = $ARGV[1];
             shift @ARGV;
             shift @ARGV;
@@ -776,51 +680,38 @@ DESCRIPTION
    sequence file and the specified allele set. If possible the ST will be
    given, or if unknown, that field will be left empty
 
-        Notice that although the options mimic that the input sequences are
+   Notice that although the options mimic that the input sequences are
    aligned against the alleles, it is in fact the other way around. First,
    the input is converted to a blast database, against which is aligned the
-   alleles from the species specified with '-d'.
-
-   Notice also that the default options for BLAST are changed to suit the
-   MLST alignment. Although the user can change the arguments just as if he
-   was running blastall directly, this is the command line used as default
-   in this script:
-
-        $BLASTALL $CMD
-
-   These defaults can be overridden by giving them as arguments to this
-   script, although it will likely break if anything other than '-a' is
-   changed. Example:
-
-   $ProgName -a 10 -i [File] -d [MLST Database]
+   alleles from the species specified with '-s'.
 
 OPTIONS
    Most options are simply forwarded to the call to BLAST. A few are unique
    to this script and a few blast arguments deserve special mention.
 
+    -h HELP
+                    Prints a message with options and information to the screen
+    -d DATABSE
+                    The path to where you have located the database folder
+    -blast BLAST-2.2.26
+                    The path to the location of blast-2.2.26
+    -i INFILE
+                    Your input file which needs to be preassembled partial or complete genomes in fasta format
+    -o OUTFOLDER
+                    The folder you want to have your output files places
+    -s SPECIES
+                    The species for which the MLST should be calculated. The options can be found in the
+                    *mlst_schemes* file in the *database* folder.
+                    
+
+Example of use with the *database* and *blast-2.2.26* folder loacted in the same folder
+    
+    perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
+
+Example of use with the *database* and *blast-2.2.26* folder loacted in antoher folder
+
+    perl MLST-1.8.pl -d path/to/database -blast path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
      -d [Species]
-   The species for which the MLST should be calculated.
-   Should follow a simple format, e.g. Senterica, Cjejuni, etc. These are
-   in fact the core names of a .fsa and .table file pair located in the
-   database directory:
-
-   $MLST_DB
-
-     -I [Format]
-   Specify the sequence format of the input file.
-   If the input file is in another format than fasta, this can be specified
-   here. Most BioPerl sequence formats are supported.
-   Default is 'fasta'
-
-     -O [Format]
-   Specifies the format of the output.
-   If left unspecified (the default), the ST is given along with the
-   corresponding allele numbers in a tabbed format. If set to a sequence
-   format, e.g. 'tab' or 'fasta', the sequence of the alleles will instead
-   be outputted in the requested format.
-
-     -h or --help
-   Prints this text.
 
 VERSION
     Current: $Version
@@ -1004,231 +895,3 @@ sub print_txt_results{
    print ALLELE $allelealign;
    close (ALLELE);
 }#end sub(print_txt_results)
-
-# --------------------------------------------------------------------
-# %% HTML results table %%
-# Generates a HTLM table containing the scripts results
-#
-#sub print_html_results{
-#  #Printing the styles
-#  print "<style type='text/css'>".
-#        "  .bggrey{".
-#        "    background-color: #AAAAAA;".
-#        "  }".
-#        "  .bgred{".
-#        "    background-color: #BF2026;".
-#        "  }".
-#        "  .bggreen{".
-#        "    background-color: #6EBE50;".
-#        "  }".
-#        "  tr.header{".
-#        "    font-weight: bold;".
-#        "    text-align: center;".
-#        "    background-color: grey;".
-#        "  }".
-#        "  .w70{".
-#        "    width:70%;".
-#        "  }".
-#        "  span, p{".
-#        "    font-size: 16px;".
-#        "  }".
-#        "</style>";
-#   
-#   my ($resultsAndSettingsArray, $geneResultsHash, $geneAlignQueryHash, $geneAlignHomoHash, $geneAlignHitHash) = @_;
-#   
-#   # INITIALIZING WARNING VARIABLE
-#   my $txtwarning = "";
-#   
-#   # print styles
-#   print "\n\n<!-- CONTENT START -->\n\n"; #CONTENT START
-#   print "<h1>MLST-1.8 Server - Typing Results</h1>";
-#   print "<h1>Sequence Type:&nbsp;<i class='grey'>".@{$resultsAndSettingsArray}[0]."</i></h1><br>\n";
-#   
-#   # PRINT RESULT TABLE
-#   print "<table class='center w70 results'>\n";
-#   # PRINTING THE HEADER OF THE TABLE
-#   print "<tr>\n";
-#   print "<th>Locus</th>\n";
-#   print "<th>% Identity</th>\n";
-#   print "<th>HSP Length</th>";
-#   print "<th>Allele Length</th>\n";
-#   print "<th>Gaps</th>\n";
-#   print "<th>Allele</th>\n";
-#   print "</tr>\n";
-#   
-#   # Print the result rows
-#   foreach my $key (sort (keys %{$geneResultsHash})) {
-#      my $array = ${$geneResultsHash}{$key};
-#      #let's check if it's the case of perfect match or warning
-#      if (@$array[0] eq "perfect"){
-#         print "<tr class='bggreen'>\n";
-#      }elsif (@$array[0] eq "warning"){
-#         print "<tr class='bgred'>";
-#         # WARNING IS ADDED SINCE NOT ALL MATCHES ARE PERFECT
-#         if( $txtwarning eq "" ){ $txtwarning = "<p class='center w70'>Please note that one or more loci do not match perfectly to any previously registered MLST allele. We recommend verifying the results by traditional methods for MLST!</p>";}
-#      }
-#      print "<td><i>".lc($key)."</i></td>"; #loci
-#      print "<td style='text-align:right;'>".sprintf("%.2f", @$array[1])."</td>"; #Identity
-#      print "<td style='text-align:right;'>".@$array[3]."</td>"; #hit length
-#      print "<td style='text-align:right;'>".@$array[2]."</td>"; #allele length
-#      print "<td style='text-align:right;'>".@$array[4]."</td>"; #gaps
-#      print "<td><i>".lc(@$array[5])."</i></td>"; #best match
-#      print "</tr>\n";
-#   }#end foreach
-#   print "</table>";
-#   
-#   # PRINTING WARNING (if any!)
-#   if( $txtwarning ne "" ){ print($txtwarning);}
-#   
-#   # END OF RESULTS TABLE
-#   print "<br>\n";
-#   
-#   #########  PRINT EXTENDED OUTPUT ##############
-#   
-#   ####### JAVASCRIPT FUNCTION ##########
-#   print "<script type='text/javascript'>function printOutput(tag){var ele = document.getElementById(tag).style;if (ele.display=='block'){ele.display='none';}else{ele.display='block';}}</script>\n";
-#   print "<center><button type='button' onclick='printOutput(&quot;eo&quot;)'>extended output</button></center><div id='eo' class='hide'>";
-#   
-#   ###### CONTENT OF EXTENDED OUTPUT ########
-#   
-#   # ADDING LINKS TO THE RESULTS AS TEXT, TO THE MLST SEQUENCES AND TO THE HIT IN GENOME SEQUENCES
-#   my $mypathID;
-#   if ($runroot =~ m/IO\/([0-9_]+)\//){
-#      $mypathID = $1;
-#   }else{
-#      $mypathID = '';
-#      print "Error occured, could not locate runroot!<br>\n";
-#   }
-#   my $downloadScript = "https://cge.cbs.dtu.dk/cge/download_files2.php";
-#   print "<br>\n<table>\n";
-#   print  "<tr><td><form action='$downloadScript' method='post'><input type='hidden' name='service' value='MLST'><input type='hidden' name='version' value='1.8'><input type='hidden' name='filename' value='standard_output.txt.gz'><input type='hidden' name='pathid' value='".$mypathID."'><input type='submit' value='Results as text'></form>\n";
-#   print "</td><td><form action='$downloadScript' method='post'><input type='hidden' name='service' value='MLST'><input type='hidden' name='version' value='1.8'><input type='hidden' name='filename' value='Hit_in_genome_seq.fsa.gz'><input type='hidden' name='pathid' value='".$mypathID."'><input type='submit' value='Hit in genome sequences'></form>\n";
-#   print "</td><td><form action='$downloadScript' method='post'><input type='hidden' name='service' value='MLST'><input type='hidden' name='version' value='1.8'><input type='hidden' name='filename' value='MLST_allele_seq.fsa.gz'><input type='hidden' name='pathid' value='".$mypathID."'><input type='submit' value='MLST allele sequences'></form></td></tr>\n";
-#   print "</table>\n";
-#   
-#   my $printIteration = 0;
-#   print "<pre><br>";#first line after the buttons
-#   foreach my $key (sort (keys %{$geneResultsHash})) {
-#      $printIteration++;
-#      my @optHitSubStr=(); #will contain the optimised javascript to be printed out
-#      my @optAllSubStr=(); #will contain the optimised javascript to be printed out
-#      my $array = ${$geneResultsHash}{$key};
-#      my $outStr = "<i>".lc($key)."</i>";
-#      if (@$array[0] eq "perfect" ){
-#         $outStr .= ": PERFECT MATCH, ";
-#      }elsif (@$array[0] eq "warning" ){
-#         $outStr .= ": WARNING, ";
-#      }
-#      my $identity =@$array[1];
-#      my $allLen =@$array[2];
-#      my $hspLen =@$array[3];
-#      my $gaps =@$array[4];
-#      my $matchAll =@$array[5];
-#      my $qStart = $QUERY_START{$matchAll};
-#      $outStr .= "Identity: ".@$array[1]."%, HSP/Length: ".@$array[3]."/".@$array[2].", Gaps: ".@$array[4].",  Best Match: <i>".lc(@$array[5])."</i>";
-#      if ($printIteration!=1){ print "<br><br><br>"; }
-#      print "<span>$outStr</span><br>";
-#      
-#      #now print the alleles
-#      my $queryArray = ${$geneAlignQueryHash}{$key};
-#      my $homoArray = ${$geneAlignHomoHash}{$key};
-#      my $hitArray = ${$geneAlignHitHash}{$key};
-#      
-#      for (my $i=0; $i < scalar(@$hitArray); $i++){
-#         my $mlstAllPrefix = "";
-#         my $hitPrefix = "";
-#         my $tmpHitFinal = "";
-#         my $tmpAllFinal = "";
-#         if (@$array[0] eq "perfect" ){
-#            # PRINT THE ALIGNED SEQUENCES IN A GREEN SPAN
-#            #if ($i==0){ print "<br>"; }
-#            print "<br><br><span>MLST allele seq:    </span><span class='bggreen'>".@$queryArray[$i]."</span>";
-#            print "<br><span>Hit in genome:      </span><span class='bggreen'>".@$hitArray[$i]."</span>";
-#         }else{
-#            # IN CASE WE GET A WARNING, WE PRINT IN MULTIPLE COLORS
-#            #if ($i==0){ $mlstAllPrefix ="<br>"; }
-#            $mlstAllPrefix = "<br><br><span>MLST allele seq:    </span>";
-#            $hitPrefix = "<br><span>Hit in genome:      </span>";
-#            @optHitSubStr=();
-#            @optAllSubStr=();
-#            my $color = 'grey';
-#            my $prevcolor = 'grey';
-#            my $tmpHitSingleLine = @$hitArray[$i];
-#            my $tmpHomoSingleLine = @$homoArray[$i];
-#            my $tmpQuerySingleLine = @$queryArray[$i];
-#            my $alignLen = length($tmpQuerySingleLine);
-#            
-#            #### let's fill the homology string with white-spaces where needed ####
-#            if ($tmpHomoSingleLine eq ""){ # homo string is empty
-#               #fill up with white spaces
-#               for (my $index=0; $index < $alignLen; $index++){
-#                  $tmpHomoSingleLine .= " ";
-#               }
-#            }elsif(length($tmpHomoSingleLine) < $alignLen){ # homo string is not full
-#               #fill up with white spaces
-#               for (my $index=length($tmpHomoSingleLine); $index < $alignLen; $index++){
-#                  $tmpHomoSingleLine .= " ";
-#               }
-#            }
-#            #setting starting span for string segment
-#            $tmpAllFinal = "<span class='bggrey'>";
-#            $tmpHitFinal = "<span class='bggrey'>";
-#            
-#            for (my $j=0; $j<$alignLen; $j++){
-#               #checking if in HSP region
-#               my $curPos = $i*60+$j; #current element in the query
-#               if($curPos >= $qStart-1 && $curPos < $qStart+$hspLen-1){
-#                  #checking for homology
-#                  if(substr($tmpHomoSingleLine, $j, 1) eq "|" ){ #identical
-#                     $color = 'green';
-#                  }else{ #not identical
-#                     $color = 'red';
-#                  }
-#               }else{ #Not in HSP region
-#                  $color = 'grey';
-#               }
-#               #checking if the color has changed since last element
-#               if( $color ne $prevcolor ){
-#                  $tmpAllFinal .= "</span><span class='bg$color'>"; #Change color
-#                  $tmpHitFinal .= "</span><span class='bg$color'>"; #Change color
-#               }
-#               $prevcolor=$color; #updating previous color variable
-#               #updating tmp strings
-#               $tmpAllFinal .= substr($tmpQuerySingleLine, $j, 1);
-#               $tmpHitFinal .= substr($tmpHitSingleLine, $j, 1);
-#            }
-#            
-#            #close the last <span> tag
-#            $tmpAllFinal .= "</span>";
-#            $tmpHitFinal .= "</span>"; #close the tag
-#            
-#            #add the lines to the arrays
-#            push(@optAllSubStr, $tmpAllFinal);
-#            push(@optHitSubStr, $tmpHitFinal);
-#         }
-#         
-#         #PRINT THE HTML OUTPUT
-#         if (scalar(@optAllSubStr) != 0){
-#            #PRINT ALLELE LINE
-#            print $mlstAllPrefix;
-#            
-#            # PRINT ALLELE SUBSTRINGS
-#            foreach (@optAllSubStr){ print $_; }
-#            
-#            #PRINT HIT LINE
-#            print $hitPrefix;
-#            
-#            # PRINT HIT THE SUBSTRINGS
-#            foreach (@optHitSubStr){ print $_; }
-#         }
-#      }
-#      print "\n";
-#   }
-#   
-#   ######### DIV CONTENT ENDED #########
-#   print "</pre><br><br></div>";
-#   
-#   # PRINT SETTINGS
-#   print "<h2>MLST Profile:&nbsp;<i class='grey'>".@{$resultsAndSettingsArray}[1]."</i></h2>\n";
-#   print "<h2>Organism:&nbsp;<i class='grey'>".@{$resultsAndSettingsArray}[2]."</i></h2>\n";
-#} # print_html_results :: END
