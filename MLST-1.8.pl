@@ -482,7 +482,7 @@ sub commandline_parsing {
             shift @ARGV;
             shift @ARGV;
         }
-        elsif ($ARGV[0] =~ m/^-blast$/) {
+        elsif ($ARGV[0] =~ m/^-b$/) {
             $BLAST = $ARGV[1];
             $BLASTALL = "$BLAST/bin/blastall";
             $FORMATDB = "$BLAST/bin/formatdb";
