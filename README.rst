@@ -41,7 +41,7 @@ Options:
                     Prints a message with options and information to the screen
     -d DATABSE
                     The path to where you have located the database folder
-    -blast BLAST
+    -b BLAST
                     The path to the location of blast-2.2.26
     -i INFILE
                     Your input file which needs to be preassembled partial or complete genomes in fasta format
