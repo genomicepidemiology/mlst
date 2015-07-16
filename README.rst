@@ -41,7 +41,7 @@ Options:
                     Prints a message with options and information to the screen
     -d DATABSE
                     The path to where you have located the database folder
-    -blast BLAST-2.2.26
+    -blast BLAST
                     The path to the location of blast-2.2.26
     -i INFILE
                     Your input file which needs to be preassembled partial or complete genomes in fasta format
@@ -96,7 +96,7 @@ When using the method please cite:
 
 Multilocus Sequence Typing of Total Genome Sequenced Bacteria.
 Larsen MV, Cosentino S, Rasmussen S, Friis C, Hasman H, Marvig RL,
-Jelsbak L, Sicheritz-PontŽn T, Ussery DW, Aarestrup FM and Lund O.
+Jelsbak L, Sicheritz-Pontï¿½n T, Ussery DW, Aarestrup FM and Lund O.
 J. Clin. Micobiol. 2012. 50(4): 1355-1361.
 PMID: 22238442         doi: 10.1128/JCM.06094-11
 [Epub ahead of print]
