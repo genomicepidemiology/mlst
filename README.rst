@@ -15,10 +15,7 @@ version of the MLST service. The method enables investigators to determine the S
 
 ## Usage
 
-To use the service servral data needs to be pre-installed.
-*database*
-*blast-2.2.26*
-*Makefile*
+To use the service some data needs to be pre-installed: *database*, *blast-2.2.26* and *Makefile*
 
 The folder *database* includes all the MLST schemes and needs to be updataed to get the best results.
 The datasets are extracted from the http://pubmlst.org/ webside weekly and can be downloaded from
@@ -26,9 +23,10 @@ http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_sche
 used by the program but also contains the different MLST schemes provided and what to write
 in the commandline to use a particular shceme. 
 
-The folder *blast-2.2.26* includes blastall and formatdb which used by the *MLST-1.8.pl* script
+The folder *blast-2.2.26* includes blastall and formatdb which are used by the *MLST-1.8.pl* script
 
-The file *Makefile* installs the nesserary perl modules to run the *MLST-1.8.pl* script.
+The file *Makefile* installs the nesserary perl modules to run the *MLST-1.8.pl* script. It is used by writing:
+    make install
 
 The program can be invoked with the -h option to get help and more information of the service.
 
@@ -39,7 +37,7 @@ Options:
 
     -h HELP
                     Prints a message with options and information to the screen
-    -d DATABSE
+    -d DATABASE
                     The path to where you have located the database folder
     -b BLAST
                     The path to the location of blast-2.2.26
@@ -55,11 +53,11 @@ Options:
 
 ## Example of use with the *database* and *blast-2.2.26* folder loacted in the current directory 
     
-    perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
+    perl MLST-1.8.pl -i test.fsa -o OUTFOLDER -s ecoli
 
 ## Example of use with the *database* and *blast-2.2.26* folder loacted in antoher directory
 
-    perl MLST-1.8.pl -d path/to/database -blast path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
+    perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa -o OUTFOLDER -s ecoli
     
 
 ## Web-server

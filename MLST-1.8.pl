@@ -39,14 +39,18 @@ if (defined $Help || not defined $Organism || not defined $InFile) {
    exit;
 }
 
-#If there are not given a path to the different databases and BLAST the program assume that the files are located as downloaded from the webside
-if (not defined $BLASTALL or not defined $FORMATDB or not defined $MLST_DB or not defined $mlst_scheme_file or not defined $dir) {
+#If there are not given a path to the database or BLAST the program assume that the files are located in the curet directury
+if (not defined $BLAST) {
    $BLASTALL = "blast-2.2.26/bin/blastall";
    $FORMATDB = "blast-2.2.26/bin/formatdb";
+}
+if (not defined $MLST_DB) {
    $MLST_DB = "database";
    $mlst_scheme_file = "database/mlst_schemes";
-   mkdir "output";
-   $dir = "output";
+}
+if (not defined $dir) {
+  mkdir "output";
+  $dir = "output";
 }
 
 
@@ -671,9 +675,8 @@ NAME
    $ProgName - $ProgNameLong
 
 SYNOPSIS
-   $ProgName -d [Species] [Options] < [File]
-     or
-   $ProgName -d [Species] -i [File] [Options]
+   $ProgName [Options] 
+
 
 DESCRIPTION
    Calculates the MLST profile based on a BLAST alignment of the input
@@ -686,8 +689,6 @@ DESCRIPTION
    alleles from the species specified with '-s'.
 
 OPTIONS
-   Most options are simply forwarded to the call to BLAST. A few are unique
-   to this script and a few blast arguments deserve special mention.
 
     -h HELP
                     Prints a message with options and information to the screen
@@ -704,13 +705,13 @@ OPTIONS
                     *mlst_schemes* file in the *database* folder.
                     
 
-Example of use with the *database* and *blast-2.2.26* folder loacted in the same folder
+Example of use with the *database* and *blast-2.2.26* folder loacted in the current directory
     
     perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
 
 Example of use with the *database* and *blast-2.2.26* folder loacted in antoher folder
 
-    perl MLST-1.8.pl -d path/to/database -blast path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
+    perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
      -d [Species]
 
 VERSION
