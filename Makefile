@@ -6,3 +6,4 @@ install:
 clean:
 	find ./ -name "*.DS_Store" -delete
 	find ./ -name "*.log" -delete
+	find ./ -name "*.gz" -delete

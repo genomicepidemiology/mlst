@@ -26,7 +26,7 @@ ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST
 
 and download the version for your OS with the format:
 ```url
-blast-version-OS.tar.gz
+blast-version-architecture-OS.tar.gz
 ```
 
 after unzipping the file, add this command to the end of your ~/bash_profile.
@@ -36,6 +36,10 @@ export PATH=$PATH:/path/to/blast-folder/bin
 
 where path/to/blast-folder is the folder you unzipped.
 
+The script brew.sh will attempt to download and install Blast for you. By default it will install Blast for MacOS. To install it in a Linux platform change
+```bash
+${BLASTMAC} to ${BLASTLINUX}
+```
 MLST has several Perl dependencies. To install them:
 ```bash
 make install
