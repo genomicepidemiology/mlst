@@ -1,14 +1,16 @@
 
 #!/bin/env bash
 #
-# PerlBrew needs to be installed to manage isolated perl environemnts
 
 PERLBREW='http://install.perlbrew.pl'
 BLASTLINUX='ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-2.2.26-x64-linux.tar.gz'
 BLASTMAC='ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-2.2.26-universal-macosx.tar.gz'
 BLASTFOLDER=blast
 
-if [ perlbrew ]; then
+# PerlBrew needs to be installed to manage isolated perl environemnts
+
+# FIXME
+if [ which `perlbrew` ]; then
     echo 'Perl brew installed'
 else
     echo 'Installing Perl brew...'
@@ -21,7 +23,8 @@ else
 fi
 
 # Installing NCBI Blast tools
-if [ blastall ]; then
+# # FIXME
+if [ which `blastall` ]; then
     echo 'Blast tools installed'
 else
     echo 'Installing Blast tools...'
