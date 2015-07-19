@@ -14,19 +14,26 @@ command -v perlbrew >/dev/null 2>&1 || {
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bash_profile
 
     perlbrew init
-    echo "Do you want to install a local perl? [Y]/[]"
 
+    echo "Do you want to install a local perl? [Y]/[N]"
     read answer
     if  [ $answer == 'Y' ]; then
-        echo 'Installing perl-5.23.0'
+        echo 'Installing perl-5.23.0';
         perlbrew install perl-5.23.0
         perlbrew use perl-5.23.0
     else
-        echo 'Local perl will be used'
+        echo 'Local perl will be used';
     fi
-    perlbrew install-cpanm
-
 }
+
+echo "Do you want to install a cpanmin locally through perlbrew? [Y]/[N]"
+read answer
+if  [ $answer == 'Y' ]; then
+    echo 'Installing perlbrew install-cpanm';
+    perlbrew install-cpanm
+else
+  curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+fi
 
 # Installing NCBI Blast tools if missing
 command -v blastall >/dev/null 2>&1 || {
