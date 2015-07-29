@@ -26,27 +26,30 @@ command -v perlbrew >/dev/null 2>&1 || {
     echo "Do you want to install a local perl? [Y]/[N]"
     read answer
     if  [ $answer == 'Y' ]; then
-        echo 'Installing perl-5.23.0';
+        echo 'Installing perl-5.23.0 ...';
         perlbrew install perl-5.23.0
         perlbrew use perl-5.23.0
     else
-        echo 'Local perl will be used';
+        echo 'Local perl will be used ...';
     fi
 }
 
 echo "Do you want to install a cpanmin locally through perlbrew? [Y]/[N]"
 read answer
 if  [ $answer == 'Y' ]; then
-    echo 'Installing perlbrew install-cpanm';
+    echo 'Installing perlbrew install-cpanm...';
     perlbrew install-cpanm
+else
+    echo "Do you want to install a cpanmin as sudo[Y]/[N]"
+    read answer
+    if  [ $answer == 'Y' ]; then
+        echo 'Installing cpanmin as sudo...';
+      curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+    else
+        echo 'Assuming cpanm is already installed...'
+    fi
 fi
 
-echo "Do you want to install a cpanmin as sudo[Y]/[N]"
-read answer
-if  [ $answer == 'Y' ]; then
-    echo 'Installing cpanmin as sudo';
-  curl -L https://cpanmin.us | perl - --sudo App::cpanminus
-fi
 
 # Installing NCBI Blast tools if missing
 command -v blastall >/dev/null 2>&1 || {
