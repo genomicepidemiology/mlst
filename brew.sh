@@ -10,7 +10,14 @@ BLASTFOLDER=blast
 # PerlBrew needs to be installed to manage isolated perl environemnts if missing
 command -v perlbrew >/dev/null 2>&1 || {
     echo 'Installing Perl brew...'
-    curl -L ${PERLBREW} | bash
+    echo "OS type: ${OSTYPE}"
+
+    if [[ "$OSTYPE" == 'linux*' ]]; then
+        wget -O - http://install.perlbrew.pl | bash
+    else
+        curl -L ${PERLBREW} | bash
+    fi
+
     source ~/perl5/perlbrew/etc/bashrc
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bash_profile
 
