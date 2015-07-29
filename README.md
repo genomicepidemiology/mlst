@@ -13,13 +13,29 @@ The MLST service contains one perl script *MLST-1.8.pl* which is the script of t
 version of the MLST service. The method enables investigators to determine the ST based on WGS data.
 
 ## Installation
+
+To use the service some data needs to be pre-installed: *database*, Blast and several Perl dependencies.
+
+The folder *database* includes all the MLST schemes and needs to be updataed to get the best results.
+The datasets are extracted from the http://pubmlst.org/ webside weekly and can be downloaded from
+http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_schemes* file which is
+used by the program but also contains the different MLST schemes provided and what to write
+in the commandline to use a particular shceme.
+
 Perlbrew is used to manage isolated perl environments. To install it run:
 ```bash
 bash brew.sh
 ```
-This will installed Perl 5.23 in the Home folder, along with CPAN minus as package manager
 
-Two external tools from the Blast package, BlastAll and FormatDB should be installed and place in the user's path. To download Blast go to
+This will installed Perl 5.23 in the Home folder, along with CPAN minus as package manager.
+Blast will also be installed when running brew.sh if BlastAll and FormatDB are not already installed and place in the user's path.
+After running brew.sh and installing Blast add this command to the end of your ~/bash_profile to add BlastAll and FormatDB to the user's path
+
+```bash
+export PATH=$PATH:blast-2.2.26/bin
+```
+
+If you want to download the two external tools from the Blast package, BlastAll and FormatDB, yourself go to
 ```url
 ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST
 ```
@@ -36,11 +52,7 @@ export PATH=$PATH:/path/to/blast-folder/bin
 
 where path/to/blast-folder is the folder you unzipped.
 
-The script brew.sh will attempt to download and install Blast for you. By default it will install Blast for MacOS. To install it in a Linux platform change
-```bash
-${BLASTMAC} to ${BLASTLINUX}
-```
-MLST has several Perl dependencies. To install them:
+At last MLST has several Perl dependencies. To install them (this requires CPAN minus as package manager):
 ```bash
 make install
 ```
@@ -52,19 +64,6 @@ Remember to add the program to your system path if you want to be able to invoke
 If you don't do that you have to write the full path to the program when using it.
 
 ## Usage
-
-To use the service some data needs to be pre-installed: *database*, *blast-2.2.26* and *Makefile*
-
-The folder *database* includes all the MLST schemes and needs to be updataed to get the best results.
-The datasets are extracted from the http://pubmlst.org/ webside weekly and can be downloaded from
-http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_schemes* file which is
-used by the program but also contains the different MLST schemes provided and what to write
-in the commandline to use a particular shceme.
-
-The folder *blast-2.2.26* includes blastall and formatdb which are used by the *MLST-1.8.pl* script
-
-The file *Makefile* installs the nesserary perl modules to run the *MLST-1.8.pl* script. It is used by writing:
-    make install
 
 The program can be invoked with the -h option to get help and more information of the service.
 
@@ -78,22 +77,25 @@ Options:
     -d DATABASE
                     The path to where you have located the database folder
     -b BLAST
-                    The path to the location of blast-2.2.26
+                    The path to the location of blast-2.2.26 if it is not added
+                    to the user's path (see the install guide in 'README.md')
     -i INFILE
-                    Your input file which needs to be preassembled partial or complete genomes in fasta format
+                    Your input file which needs to be preassembled partial
+                    or complete genomes in fasta format
     -o OUTFOLDER
-                    The folder you want to have your output files places. If not specified the program will
-                    create a folder named 'Output' in which the result files will be stored.
+                    The folder you want to have your output files stored.
+                    If not specified the program will create a folder named
+                    'Output' in which the result files will be stored.
     -s SPECIES
-                    The MLST scheme you want to use. The options can be found in the *mlst_schemes* file
-                    in the *database* folder
+                    The MLST scheme you want to use. The options can be found
+                    in the 'mlst_schemes' file in the 'database' folder
 ```
 
-#### Example of use with the *database* and *blast-2.2.26* folder located in the current directory
+#### Example of use with the *database* folder located in the current directory and Blast added to the user's path
 ```perl
     perl MLST-1.8.pl -i test.fsa -o OUTFOLDER -s ecoli
 ```
-#### Example of use with the *database* and *blast-2.2.26* folder loacted in antoher directory
+#### Example of use with the *database* and *blast-2.2.26* folders loacted in other directories
 ```perl
     perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa \
      -o OUTFOLDER -s ecoli

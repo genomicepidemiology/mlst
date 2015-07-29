@@ -692,24 +692,27 @@ OPTIONS
 
     -h HELP
                     Prints a message with options and information to the screen
-    -d DATABSE
+    -d DATABASE
                     The path to where you have located the database folder
-    -blast BLAST-2.2.26
-                    The path to the location of blast-2.2.26
+    -b BLAST
+                    The path to the location of blast-2.2.26 if it is not added
+                    to the user's path (see the install guide in 'README.md')
     -i INFILE
-                    Your input file which needs to be preassembled partial or complete genomes in fasta format
+                    Your input file which needs to be preassembled partial
+                    or complete genomes in fasta format
     -o OUTFOLDER
-                    The folder you want to have your output files places
+                    The folder you want to have your output files stored.
+                    If not specified the program will create a folder named
+                    'Output' in which the result files will be stored.
     -s SPECIES
-                    The species for which the MLST should be calculated. The options can be found in the
-                    *mlst_schemes* file in the *database* folder.
+                    The MLST scheme you want to use. The options can be found
+                    in the 'mlst_schemes' file in the 'database' folder
 
-
-Example of use with the *database* and *blast-2.2.26* folder loacted in the current directory
+Example of use with the 'database' folder located in the current directory and Blast added to the user's path
 
     perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
 
-Example of use with the *database* and *blast-2.2.26* folder loacted in antoher folder
+Example of use with the 'database' and 'blast-2.2.26' folders loacted in other directories
 
     perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
      -d [Species]
