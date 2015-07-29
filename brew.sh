@@ -31,7 +31,12 @@ read answer
 if  [ $answer == 'Y' ]; then
     echo 'Installing perlbrew install-cpanm';
     perlbrew install-cpanm
-else
+fi
+
+echo "Do you want to install a cpanmin as sudo[Y]/[N]"
+read answer
+if  [ $answer == 'Y' ]; then
+    echo 'Installing cpanmin as sudo';
   curl -L https://cpanmin.us | perl - --sudo App::cpanminus
 fi
 
