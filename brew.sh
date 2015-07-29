@@ -56,5 +56,4 @@ command -v blastall >/dev/null 2>&1 || {
     echo 'Installing Blast tools...'
     curl ${BLASTMAC} -o ${BLASTFOLDER}.tar.gz
     tar -zxvf ${BLASTFOLDER}.tar.gz
-    export PATH=$PATH:blast-2.2.26/bin
 }
