@@ -11,6 +11,7 @@ BLASTFOLDER=blast
 command -v perlbrew >/dev/null 2>&1 || {
     echo 'Installing Perl brew...'
     curl -L ${PERLBREW} | bash
+    source ~/perl5/perlbrew/etc/bashrc
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bash_profile
 
     perlbrew init
