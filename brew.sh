@@ -12,7 +12,7 @@ command -v perlbrew >/dev/null 2>&1 || {
     echo 'Installing Perl brew...'
     echo "OS type: ${OSTYPE}"
 
-    if [[ "$OSTYPE" == 'linux*' ]]; then
+    if [[ "${OSTYPE}" == 'linux*' ]]; then
         wget -O - http://install.perlbrew.pl | bash
     else
         curl -L ${PERLBREW} | bash
