@@ -20,19 +20,17 @@ command -v perlbrew >/dev/null 2>&1 || {
 
     source ~/perl5/perlbrew/etc/bashrc
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bash_profile
-
-    perlbrew init
-
-    echo "Do you want to install a local perl? [Y]/[N]"
-    read answer
-    if  [ $answer == 'Y' ]; then
-        echo 'Installing perl-5.23.0 ...';
-        perlbrew install perl-5.23.0
-        perlbrew use perl-5.23.0
-    else
-        echo 'Local perl will be used ...';
-    fi
 }
+
+perlbrew init
+echo "Do you want to install a local perl? [Y]/[N]"
+read answer
+if  [ $answer == 'Y' ]; then
+    echo 'Installing perl-5.10.0 ...';
+    perlbrew install -nf perl-5.10.0
+else
+    echo 'Local perl will be used ...';
+fi
 
 echo "Do you want to install a cpanmin locally through perlbrew? [Y]/[N]"
 read answer

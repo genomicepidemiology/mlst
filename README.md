@@ -22,12 +22,12 @@ http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_sche
 used by the program but also contains the different MLST schemes provided and what to write
 in the commandline to use a particular shceme.
 
-Perlbrew is used to manage isolated perl environments. To install it run:
+Perlbrew is used to manage isolated perl environments. To install it run
 ```bash
 bash brew.sh
 ```
 
-This will installed Perl 5.23 in the Home folder, along with CPAN minus as package manager.
+This will install Perlbrew with Perl 5.10, along with CPAN minus as package manager.
 Blast will also be installed when running brew.sh if BlastAll and FormatDB are not already installed and place in the user's path.
 After running brew.sh and installing Blast add this command to the end of your ~/bash_profile to add BlastAll and FormatDB to the user's path
 
@@ -52,10 +52,24 @@ export PATH=$PATH:/path/to/blast-folder/bin
 
 where path/to/blast-folder is the folder you unzipped.
 
-At last MLST has several Perl dependencies. To install them (this requires CPAN minus as package manager):
+The Perl dependencies works in Perl 5.10 and is installed with CPAN minus as package manager.
+If you have choosen to install a local perl when running *brew.sh* the Perl dependencies can be installed by the following
+```bash
+perlbrew use perl-5.10.0
+make install
+```
+
+When running MLST you also need to do it through perlbrew
+```bash
+perlbrew use perl-5.10.0
+```
+
+If you are using Perl 5.10.0 you can just run MLST directly in the command-line after the dependencies are installed with
 ```bash
 make install
 ```
+
+If another version of Perl is used the Perl modules might fail when running the script. 
 
 The scripts are self contained. You just have to copy them to where they should
 be used. Only the *database* folder needs to be updated mannually.
