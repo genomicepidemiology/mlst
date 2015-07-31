@@ -42,7 +42,11 @@ else
     read answer
     if  [ $answer == 'Y' ]; then
         echo 'Installing cpanmin as sudo...';
-      curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+        if [[ "${OSTYPE}" == 'linux'* ]]; then
+            wget -O - https://cpanmin.us | perl - --sudo App::cpanminus
+        else
+            curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+        fi
     else
         echo 'Assuming cpanm is already installed...'
     fi
@@ -52,6 +56,13 @@ fi
 # Installing NCBI Blast tools if missing
 command -v blastall >/dev/null 2>&1 || {
     echo 'Installing Blast tools...'
-    curl ${BLASTMAC} -o ${BLASTFOLDER}.tar.gz
-    tar -zxvf ${BLASTFOLDER}.tar.gz
+
+    if [[ "${OSTYPE}" == 'linux'* ]]; then
+        wget ${BLASTLINUX}
+    else
+        # TODO Include versions for all OS: BSD, etc...
+        curl ${BLASTMAC} > ${BLASTFOLDER}.tar.gz
+        tar -zxvf ${BLASTFOLDER}.tar.gz
+    fi
+
 }
