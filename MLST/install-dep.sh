@@ -1,6 +1,4 @@
-
 #!/bin/env bash
-#
 
 PERLBREW='http://install.perlbrew.pl'
 BLASTLINUX='ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-2.2.26-x64-linux.tar.gz'
@@ -58,7 +56,6 @@ command -v blastall >/dev/null 2>&1 || {
     echo 'Installing Blast tools...'
 
     if [[ "${OSTYPE}" == 'linux'* ]]; then
-        # TODO rename output folder
         wget ${BLASTLINUX}
     else
         # TODO Include versions for all OS: BSD, etc...
