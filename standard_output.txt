@@ -1,0 +1,290 @@
+MLST Results
+
+Sequence Type: ST-11
+Organism: Escherichia coli#1
+
+MLST Profile: ecoli
+
+********************************************************************************
+   GENE       % IDENTITY    HSP Length    Allele Length   GAPS     BEST MATCH   
+********************************************************************************
+   ADK          100.00         536             536          0          ADK-12   
+   FUMC         100.00         469             469          0         FUMC-12   
+   GYRB         100.00         460             460          0          GYRB-8   
+   ICD          100.00         518             518          0          ICD-12   
+   MDH          100.00         452             452          0          MDH-15   
+   PURA         100.00         478             478          0          PURA-2   
+   RECA         100.00         510             510          0          RECA-2   
+================================================================================
+
+adk: PERFECT MATCH, ID: 100%, HSP/Length: 536/536, Gaps: 0, Best match: adk-12
+
+MLST allele seq:    ggggaaagggactcaggctcagttcatcatggagaaatatggtattccgcaaatctccac
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggggaaagggactcaggctcagttcatcatggagaaatatggtattccgcaaatctccac
+
+MLST allele seq:    tggcgatatgctgcgtgctgcggtcaaatctggctccgagctgggtaaacaagcaaaaga
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tggcgatatgctgcgtgctgcggtcaaatctggctccgagctgggtaaacaagcaaaaga
+
+MLST allele seq:    cattatggatgctggcaaactggtcaccgacgaactggtgatcgcgctggttaaagagcg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cattatggatgctggcaaactggtcaccgacgaactggtgatcgcgctggttaaagagcg
+
+MLST allele seq:    cattgctcaggaagactgccgtaatggtttcctgttggacggcttcccgcgtaccattcc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cattgctcaggaagactgccgtaatggtttcctgttggacggcttcccgcgtaccattcc
+
+MLST allele seq:    gcaggcagacgcgatgaaagaagcgggcatcaatgttgattacgttctggaattcgacgt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gcaggcagacgcgatgaaagaagcgggcatcaatgttgattacgttctggaattcgacgt
+
+MLST allele seq:    accggacgaactgatcgttgaccgtatcgtcggtcgccgcgttcacgcgccgtctggtcg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      accggacgaactgatcgttgaccgtatcgtcggtcgccgcgttcacgcgccgtctggtcg
+
+MLST allele seq:    tgtttatcacgttaaattcaatccgccgaaagtagaaggtaaagacgacgttaccggtga
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tgtttatcacgttaaattcaatccgccgaaagtagaaggtaaagacgacgttaccggtga
+
+MLST allele seq:    agaactgactacccgtaaagacgatcaggaagaaaccgtacgtaaacgtctggttgaata
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      agaactgactacccgtaaagacgatcaggaagaaaccgtacgtaaacgtctggttgaata
+
+MLST allele seq:    ccatcagatgacagcaccgctgatcggctactactccaaagaagcggaagcgggta
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ccatcagatgacagcaccgctgatcggctactactccaaagaagcggaagcgggta
+
+
+--------------------------------------------------------------------------------
+
+fumc: PERFECT MATCH, ID: 100%, HSP/Length: 469/469, Gaps: 0, Best match: fumc-12
+
+MLST allele seq:    cgagcgccattcggcaggcggcggatgaagtactggcaggacagcatgacgacgaattcc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgagcgccattcggcaggcggcggatgaagtactggcaggacagcatgacgacgaattcc
+
+MLST allele seq:    cgctggctatctggcagaccggctccggcacgcaaagtaacatgaacatgaatgaagtgc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgctggctatctggcagaccggctccggcacgcaaagtaacatgaacatgaatgaagtgc
+
+MLST allele seq:    tggctaaccgggccagtgaattactcggcggcgtgcgcgggatggaacgtaaagttcacc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tggctaaccgggccagtgaattactcggcggcgtgcgcgggatggaacgtaaagttcacc
+
+MLST allele seq:    ctaacgacgacgtgaacaaaagccaaagttccaacgatgtctttccgacggcgatgcacg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ctaacgacgacgtgaacaaaagccaaagttccaacgatgtctttccgacggcgatgcacg
+
+MLST allele seq:    ttgcggcgctgctggcgctgcgcaagcaactcattccgcagcttaaaaccctgacacaga
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ttgcggcgctgctggcgctgcgcaagcaactcattccgcagcttaaaaccctgacacaga
+
+MLST allele seq:    cgctgagtgaaaaatcgcgtgcatttgccgatatcgtaaaaatcggtcgaacccacttgc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgctgagtgaaaaatcgcgtgcatttgccgatatcgtaaaaatcggtcgaacccacttgc
+
+MLST allele seq:    aggacgccaccccgctaacactggggcaggagatttccggctgggtagcgatgctcgagc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      aggacgccaccccgctaacactggggcaggagatttccggctgggtagcgatgctcgagc
+
+MLST allele seq:    ataatctcaaacatatcgaatacagcctgcctcacgtagcggaactggc
+                    |||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ataatctcaaacatatcgaatacagcctgcctcacgtagcggaactggc
+
+
+--------------------------------------------------------------------------------
+
+gyrb: PERFECT MATCH, ID: 100%, HSP/Length: 460/460, Gaps: 0, Best match: gyrb-8
+
+MLST allele seq:    ggtctgcacggcgttggtgtttcggtagtaaacgccctgtcgcaaaaactggagctggtt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggtctgcacggcgttggtgtttcggtagtaaacgccctgtcgcaaaaactggagctggtt
+
+MLST allele seq:    attcagcgcgagggtaaaattcaccgtcagatctacgaacacggtgtaccgcaggcaccg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      attcagcgcgagggtaaaattcaccgtcagatctacgaacacggtgtaccgcaggcaccg
+
+MLST allele seq:    ctggcggttaccggcgagactgaaaaaaccggcaccatggtgcgtttctggcccagcctc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ctggcggttaccggcgagactgaaaaaaccggcaccatggtgcgtttctggcccagcctc
+
+MLST allele seq:    gaaaccttcaccaatgtgaccgagttcgaatatgaaattctggcgaaacgtctgcgtgag
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gaaaccttcaccaatgtgaccgagttcgaatatgaaattctggcgaaacgtctgcgtgag
+
+MLST allele seq:    ttgtcgttcctcaactccggcgtttccattcgtctgcgcgacaagcgtgacggcaaagaa
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ttgtcgttcctcaactccggcgtttccattcgtctgcgcgacaagcgtgacggcaaagaa
+
+MLST allele seq:    gaccacttccactatgaaggcggcatcaaagcgttcgttgaatatctgaacaagaacaaa
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gaccacttccactatgaaggcggcatcaaagcgttcgttgaatatctgaacaagaacaaa
+
+MLST allele seq:    acgccgatccacccaaatatcttctacttctccaccgaaaaagacggtatcggcgttgaa
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      acgccgatccacccaaatatcttctacttctccaccgaaaaagacggtatcggcgttgaa
+
+MLST allele seq:    gtggcgctgcagtggaacgatggcttccaggaaaacatct
+                    ||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gtggcgctgcagtggaacgatggcttccaggaaaacatct
+
+
+--------------------------------------------------------------------------------
+
+icd: PERFECT MATCH, ID: 100%, HSP/Length: 518/518, Gaps: 0, Best match: icd-12
+
+MLST allele seq:    cgacgctgcagtcgagaaagcctataaaggcgagcgtaaaatctcctggatggaaattta
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgacgctgcagtcgagaaagcctataaaggcgagcgtaaaatctcctggatggaaattta
+
+MLST allele seq:    caccggtgaaaaatccacacaggtttatggtcaggacgtctggctgcctgctgaaaccct
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      caccggtgaaaaatccacacaggtttatggtcaggacgtctggctgcctgctgaaaccct
+
+MLST allele seq:    tgatctgattcgtgaatatcgcgttgccattaaaggcccgctgaccactccggttggtgg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tgatctgattcgtgaatatcgcgttgccattaaaggcccgctgaccactccggttggtgg
+
+MLST allele seq:    cggtattcgctctctgaacgttgccctgcgccaggaactggatctctacatctgcctgcg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cggtattcgctctctgaacgttgccctgcgccaggaactggatctctacatctgcctgcg
+
+MLST allele seq:    tccggtacgttactatcagggcactccaagcccggttaaacaccctgaactgaccgatat
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tccggtacgttactatcagggcactccaagcccggttaaacaccctgaactgaccgatat
+
+MLST allele seq:    ggttatcttccgtgaaaactcggaagacatttatgcgggtatcgaatggaaagctgactc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggttatcttccgtgaaaactcggaagacatttatgcgggtatcgaatggaaagctgactc
+
+MLST allele seq:    tgccgacgccgagaaagtgattaaattcctgcgtgaagagatgggcgtgaagaaaattcg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tgccgacgccgagaaagtgattaaattcctgcgtgaagagatgggcgtgaagaaaattcg
+
+MLST allele seq:    cttcccggaacattgcggtatcggtattaagccgtgttctgaagaaggcaccaaacgtct
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cttcccggaacattgcggtatcggtattaagccgtgttctgaagaaggcaccaaacgtct
+
+MLST allele seq:    ggttcgtgcagcgatcgaatacgcaattgctaacgatc
+                    ||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggttcgtgcagcgatcgaatacgcaattgctaacgatc
+
+
+--------------------------------------------------------------------------------
+
+mdh: PERFECT MATCH, ID: 100%, HSP/Length: 452/452, Gaps: 0, Best match: mdh-15
+
+MLST allele seq:    ggtgtagcgcgtaaaccgggtatggatcgttccgacctgtttaatgttaacgccggcatc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggtgtagcgcgtaaaccgggtatggatcgttccgacctgtttaatgttaacgccggcatc
+
+MLST allele seq:    gtgaaaaacctggtacagcaagttgcgaaaacctgcccgaaagcgtgcattggtattatc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gtgaaaaacctggtacagcaagttgcgaaaacctgcccgaaagcgtgcattggtattatc
+
+MLST allele seq:    actaacccggttaacaccacagttgcgattgctgctgaagtgctgaaaaaagccggtgtt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      actaacccggttaacaccacagttgcgattgctgctgaagtgctgaaaaaagccggtgtt
+
+MLST allele seq:    tatgacaaaaacaaactgttcggcgttaccacgctggatatcattcgttccaacaccttt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tatgacaaaaacaaactgttcggcgttaccacgctggatatcattcgttccaacaccttt
+
+MLST allele seq:    gttgcggaactgaaaggcaaacagccaggcgaagttgaagtgccggttattggcggtcac
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gttgcggaactgaaaggcaaacagccaggcgaagttgaagtgccggttattggcggtcac
+
+MLST allele seq:    tctggtgttaccattctgccgctgttgtcacaggttcctggcgttagttttaccgagcag
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tctggtgttaccattctgccgctgttgtcacaggttcctggcgttagttttaccgagcag
+
+MLST allele seq:    gaagtggctgatctgaccaaacgtatccagaacgcgggtactgaggtggttgaagcgaaa
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gaagtggctgatctgaccaaacgtatccagaacgcgggtactgaggtggttgaagcgaaa
+
+MLST allele seq:    gccggtggcgggtcggcaaccctgtctatggg
+                    ||||||||||||||||||||||||||||||||
+Hit in genome:      gccggtggcgggtcggcaaccctgtctatggg
+
+
+--------------------------------------------------------------------------------
+
+pura: PERFECT MATCH, ID: 100%, HSP/Length: 478/478, Gaps: 0, Best match: pura-2
+
+MLST allele seq:    ataacgcgcgtgagaaagcgcgtggcgcgaaagcgatcggcaccaccggtcgtggtatcg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ataacgcgcgtgagaaagcgcgtggcgcgaaagcgatcggcaccaccggtcgtggtatcg
+
+MLST allele seq:    ggcctgcttatgaagataaagtggcacgtcgcggtctgcgtgttggcgaccttttcgaca
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ggcctgcttatgaagataaagtggcacgtcgcggtctgcgtgttggcgaccttttcgaca
+
+MLST allele seq:    aagaaaccttcgctgaaaaactgaaagaagtgatggaatatcacaacttccagttggtta
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      aagaaaccttcgctgaaaaactgaaagaagtgatggaatatcacaacttccagttggtta
+
+MLST allele seq:    actactacaaagctgaagcggttgattaccagaaagttctggatgatacgatggctgttg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      actactacaaagctgaagcggttgattaccagaaagttctggatgatacgatggctgttg
+
+MLST allele seq:    ccgacatcctgacttctatggtggttgacgtttctgacctgctcgaccaggcgcgtcagc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      ccgacatcctgacttctatggtggttgacgtttctgacctgctcgaccaggcgcgtcagc
+
+MLST allele seq:    gtggcgatttcgtcatgttcgaaggtgcgcagggtacgctgctggatatcgaccacggta
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gtggcgatttcgtcatgttcgaaggtgcgcagggtacgctgctggatatcgaccacggta
+
+MLST allele seq:    cttatccgtacgtaacttcttccaacaccactgctggtggcgtggcgaccggttccggcc
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cttatccgtacgtaacttcttccaacaccactgctggtggcgtggcgaccggttccggcc
+
+MLST allele seq:    tgggcccgcgttatgttgattacgttctgggtatcctcaaagcttactccactcgtgt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tgggcccgcgttatgttgattacgttctgggtatcctcaaagcttactccactcgtgt
+
+
+--------------------------------------------------------------------------------
+
+reca: PERFECT MATCH, ID: 100%, HSP/Length: 510/510, Gaps: 0, Best match: reca-2
+
+MLST allele seq:    cgcacgtaaactgggcgtcgatatcgacaacctgctgtgctcccagccggacaccggcga
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgcacgtaaactgggcgtcgatatcgacaacctgctgtgctcccagccggacaccggcga
+
+MLST allele seq:    gcaggcactggaaatctgtgacgccctggcgcgttctggcgcagtagacgttatcgtcgt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gcaggcactggaaatctgtgacgccctggcgcgttctggcgcagtagacgttatcgtcgt
+
+MLST allele seq:    tgactccgtggcggcactgacgccgaaagcggaaatcgaaggcgaaatcggcgactctca
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      tgactccgtggcggcactgacgccgaaagcggaaatcgaaggcgaaatcggcgactctca
+
+MLST allele seq:    catgggccttgcggcacgtatgatgagccaggcgatgcgtaagctggcgggtaacctgaa
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      catgggccttgcggcacgtatgatgagccaggcgatgcgtaagctggcgggtaacctgaa
+
+MLST allele seq:    gcagtccaacacgctgctgatcttcatcaaccagatccgtatgaaaattggtgtgatgtt
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      gcagtccaacacgctgctgatcttcatcaaccagatccgtatgaaaattggtgtgatgtt
+
+MLST allele seq:    cggtaacccggaaaccactaccggtggtaacgcgctgaaattctacgcctctgttcgtct
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cggtaacccggaaaccactaccggtggtaacgcgctgaaattctacgcctctgttcgtct
+
+MLST allele seq:    cgacatccgtcgtatcggcgcggtgaaagagggcgaaaacgtggtgggtagcgaaacccg
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgacatccgtcgtatcggcgcggtgaaagagggcgaaaacgtggtgggtagcgaaacccg
+
+MLST allele seq:    cgtgaaagtggtgaagaacaaaatcgctgcgccgtttaaacaggctgaattccagatcct
+                    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Hit in genome:      cgtgaaagtggtgaagaacaaaatcgctgcgccgtttaaacaggctgaattccagatcct
+
+MLST allele seq:    ctacggcgaaggtatcaacttctacggcga
+                    ||||||||||||||||||||||||||||||
+Hit in genome:      ctacggcgaaggtatcaacttctacggcga
+
+
+--------------------------------------------------------------------------------
+

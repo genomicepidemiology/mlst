@@ -42,6 +42,7 @@ use File::Temp qw/ tempfile tempdir /;
 use Bio::SeqIO;
 use Bio::Seq;
 use Bio::SearchIO;
+use Try::Tiny::Retry;
 
 # PROGRAM VARIABLES
 use constant PROGRAM_NAME            => 'MLST-1.8.pl';
@@ -91,12 +92,23 @@ if (not defined $dir) {
 
 # Run BLAST and find best matching Alleles
 
-my $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');
+my ($Seqs_mlst, $Seqs_input, @Blast_lines);
+  
+retry{
+   $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');  
+   $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
+                                       read_seqs(-fh => \*STDIN,   -format => $IFormat);
 
-my $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
-                                  read_seqs(-fh => \*STDIN,   -format => $IFormat);
+   @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
+}
+catch{ die $_ };
 
-my @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
+#my $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');
+#
+#my $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
+#                                  read_seqs(-fh => \*STDIN,   -format => $IFormat);
+#
+#my @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
 
 ## AVAILABLE ORGANISMS ##
 # Mapping the mlst profiles to organism names (data fetched from tab-separated file)

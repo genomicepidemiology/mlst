@@ -49,18 +49,3 @@ else
         echo 'Assuming cpanm is already installed...'
     fi
 fi
-
-
-# Installing NCBI Blast tools if missing
-command -v blastall >/dev/null 2>&1 || {
-    echo 'Installing Blast tools...'
-
-    if [[ "${OSTYPE}" == 'linux'* ]]; then
-        wget ${BLASTLINUX}
-    else
-        # TODO Include versions for all OS: BSD, etc...
-        curl ${BLASTMAC} > ${BLASTFOLDER}.tar.gz
-        tar -zxvf ${BLASTFOLDER}.tar.gz
-    fi
-
-}
