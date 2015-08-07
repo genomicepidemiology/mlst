@@ -4,12 +4,10 @@ package MLST;
 
 use 5.010000;
 use strict;
-use warnings;
 
 require Exporter;
 
 our @ISA = qw(Exporter);
-
 
 
 # Items to export into callers namespace by default. Note: do not export
@@ -81,8 +79,7 @@ if (not defined $MLST_DB) {
    $mlst_scheme_file = "database/mlst_schemes";
 }
 if (not defined $dir) {
-  mkdir "output";
-  $dir = "output";
+  $dir = ".";
 }
 
 
@@ -102,13 +99,6 @@ retry{
    @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
 }
 catch{ die $_ };
-
-#my $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');
-#
-#my $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
-#                                  read_seqs(-fh => \*STDIN,   -format => $IFormat);
-#
-#my @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
 
 ## AVAILABLE ORGANISMS ##
 # Mapping the mlst profiles to organism names (data fetched from tab-separated file)
@@ -548,6 +538,7 @@ sub commandline_parsing {
         }
         elsif ($ARGV[0] =~ m/^-o$/) {
             $dir = $ARGV[1];
+            mkdir $dir;
             shift @ARGV;
             shift @ARGV;
         }
@@ -739,26 +730,24 @@ OPTIONS
                     The path to where you have located the database folder
     -b BLAST
                     The path to the location of blast-2.2.26 if it is not added
-                    to the user's path (see the install guide in 'README.md')
+                    to the users path (see the install guide in 'README')
     -i INFILE
                     Your input file which needs to be preassembled partial
                     or complete genomes in fasta format
     -o OUTFOLDER
                     The folder you want to have your output files stored.
-                    If not specified the program will create a folder named
-                    'Output' in which the result files will be stored.
+                    If not specified the program store the output in your
+                    current directory.
     -s SPECIES
                     The MLST scheme you want to use. The options can be found
                     in the 'mlst_schemes' file in the 'database' folder
+                    
+Example of use with the *database* folder located in the current directory
+    MLST.pm -i test.fsa -s ecoli
 
-Example of use with the 'database' folder located in the current directory and Blast added to the user's path
+Example of use with the *database* loacted in another directory and a specified output folder
 
-    perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
-
-Example of use with the 'database' and 'blast-2.2.26' folders loacted in other directories
-
-    perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i INFILE.fasta -o OUTFOLDER -s ecoli
-     -d [Species]
+    MLST.pm -d path/to/database -i test.fsa -o OUTFOLDER -s ecoli
 
 VERSION
     Current: $Version

@@ -22,15 +22,29 @@ http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_sche
 used by the program but also contains the different MLST schemes provided and what to write
 in the commandline to use a particular shceme.
 
-Perlbrew is used to manage isolated perl environments. To install it run
+There are two options for installing and running MLST. You can install perlbrew, which is used to manage isolated perl environments,
+and install and run MLST in the isolated enviroment or just install and run in your own enviroment.
+If you uses perlbrew first do:
+
 ```bash
-bash brew.sh
+bash install_brew.sh
 ```
 
 This will install Perlbrew with Perl 5.10, along with CPAN minus as package manager.
-Blast will also be installed when running brew.sh if BlastAll and FormatDB are not already installed and place in the user's path.
-After running brew.sh and installing Blast add this command to the end of your ~/bash_profile to add BlastAll and FormatDB to the user's path
+After running brew.sh the isolated perl enviroment can be used:
 
+```bash
+perlbrew use perl-5.10.0
+```
+
+Now MLST can be installed, in the enviorment you want, along with the dependencies and BLAST,
+if BlastAll and FormatDB are not already installed and place in the user's path.
+```bash
+bash install.sh
+```
+
+After the instalation of blast add this command to the end of your ~/bash_profile to add BlastAll and
+FormatDB to the user's path
 ```bash
 export PATH=$PATH:blast-2.2.26/bin
 ```
@@ -52,25 +66,6 @@ export PATH=$PATH:/path/to/blast-folder/bin
 
 where path/to/blast-folder is the folder you unzipped.
 
-The Perl dependencies works in Perl 5.10 and is installed with CPAN minus as package manager.
-If you have choosen to install a local perl when running *brew.sh* the Perl dependencies can be installed by the following
-```bash
-perlbrew use perl-5.10.0
-make install
-```
-
-When running MLST you also need to do it through perlbrew
-```bash
-perlbrew use perl-5.10.0
-```
-
-If you are using Perl 5.10.0 you can just run MLST directly in the command-line after the dependencies are installed with
-```bash
-make install
-```
-
-If another version of Perl is used the Perl modules might fail when running the script.
-
 The scripts are self contained. You just have to copy them to where they should
 be used. Only the *database* folder needs to be updated mannually.
 
@@ -82,7 +77,7 @@ If you don't do that you have to write the full path to the program when using i
 The program can be invoked with the -h option to get help and more information of the service.
 
 ```bash
-Usage: perl MLST-1.8.pl [options]
+Usage: MLST.pm [options]
 
 Options:
 
@@ -92,27 +87,26 @@ Options:
                     The path to where you have located the database folder
     -b BLAST
                     The path to the location of blast-2.2.26 if it is not added
-                    to the users path (see the install guide in 'README.md')
+                    to the users path (see the install guide in 'README')
     -i INFILE
                     Your input file which needs to be preassembled partial
                     or complete genomes in fasta format
     -o OUTFOLDER
                     The folder you want to have your output files stored.
-                    If not specified the program will create a folder named
-                    'Output' in which the result files will be stored.
+                    If not specified the program store the output in your
+                    current directory.
     -s SPECIES
                     The MLST scheme you want to use. The options can be found
                     in the 'mlst_schemes' file in the 'database' folder
 ```
 
-#### Example of use with the *database* folder located in the current directory and Blast added to the user's path
+#### Example of use with the *database* folder located in the current directory
 ```perl
-    perl MLST-1.8.pl -i test.fsa -o OUTFOLDER -s ecoli
+    MLST.pm -i test.fsa -s ecoli
 ```
-#### Example of use with the *database* and *blast-2.2.26* folders loacted in other directories
+#### Example of use with the *database* loacted in another directory and a specified output folder
 ```perl
-    perl MLST-1.8.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa \
-     -o OUTFOLDER -s ecoli
+    MLST.pm -d path/to/database -i test.fsa -o OUTFOLDER -s ecoli
 ```
 
 ## Web-server

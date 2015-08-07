@@ -50,8 +50,7 @@ if (not defined $MLST_DB) {
    $mlst_scheme_file = "database/mlst_schemes";
 }
 if (not defined $dir) {
-  mkdir "output";
-  $dir = "output";
+  $dir = ".";
 }
 
 
@@ -715,15 +714,15 @@ OPTIONS
                     or complete genomes in fasta format
     -o OUTFOLDER
                     The folder you want to have your output files stored.
-                    If not specified the program will create a folder named
-                    'Output' in which the result files will be stored.
+                    If not specified the program will store the results
+                    in the curren directory.
     -s SPECIES
                     The MLST scheme you want to use. The options can be found
                     in the 'mlst_schemes' file in the 'database' folder
 
 Example of use with the 'database' folder located in the current directory and Blast added to the user's path
 
-    perl MLST-1.8.pl -i INFILE.fasta -o OUTFOLDER -s ecoli
+    perl MLST-1.8.pl -i INFILE.fasta -s ecoli
 
 Example of use with the 'database' and 'blast-2.2.26' folders loacted in other directories
 
