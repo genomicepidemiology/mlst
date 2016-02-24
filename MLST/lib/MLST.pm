@@ -485,6 +485,7 @@ if ($SeqType =~m/^ST-[\d]+/){
       }
    }
 }
+$SeqType =~ s/-//;
 
 #let's check the hash content
 if ($SeqType eq ""){

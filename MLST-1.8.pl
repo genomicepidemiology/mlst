@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/evn perl
 
 # %% Setting up %%
 print STDERR "Start\n";
@@ -12,6 +12,7 @@ use Bio::SeqIO;
 use Bio::Seq;
 use Bio::SearchIO;
 use Try::Tiny::Retry;
+use 5.010000;
 
 # PROGRAM VARIABLES
 use constant PROGRAM_NAME            => 'MLST-1.8.pl';
@@ -65,12 +66,11 @@ my ($Seqs_mlst, $Seqs_input, @Blast_lines);
 retry{
    $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');  
    $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
-                                  read_seqs(-fh => \*STDIN,   -format => $IFormat);
+                                       read_seqs(-fh => \*STDIN,   -format => $IFormat);
 
-  @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
+   @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
 }
 catch{ die $_ };
-
 
 #my $Seqs_mlst   = read_seqs(-file => $MLST_DB.'/'.$Organism.'.fsa', format => 'fasta');
 #
@@ -464,6 +464,7 @@ if ($SeqType =~m/^ST-[\d]+/){
       }
    }
 }
+$SeqType =~ s/-//;
 
 #let's check the hash content
 if ($SeqType eq ""){
@@ -517,6 +518,7 @@ sub commandline_parsing {
         }
         elsif ($ARGV[0] =~ m/^-o$/) {
             $dir = $ARGV[1];
+            mkdir $dir;
             shift @ARGV;
             shift @ARGV;
         }
@@ -538,12 +540,16 @@ sub get_blast_run {
    die "Error! Could not build blast database" if (system("$FORMATDB -p F -i $file"));
    my $query_file = $file.".blastpipe";
    #`mknod $query_file p`;
-   if ( !fork() ) {
-      open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
-      output_sequence(-fh => \*QUERY, seqs => $args{-i}, -format => 'fasta');
-      close QUERY;
-      exit(0);
-   }
+   #if ( !fork() ) {
+   #   open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
+   #   output_sequence(-fh => \*QUERY, seqs => $args{-i}, -format => 'fasta');
+   #   close QUERY;
+   #   exit(0);
+   #}
+   open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
+   output_sequence(-fh => \*QUERY, seqs => $args{-i}, -format => 'fasta');
+   close QUERY;
+   
    delete $args{-i};
 
    my $cmd = join(" ", %args);
@@ -714,8 +720,8 @@ OPTIONS
                     or complete genomes in fasta format
     -o OUTFOLDER
                     The folder you want to have your output files stored.
-                    If not specified the program will store the results
-                    in the curren directory.
+                    If not specified the program store the output in your
+                    current directory.
     -s SPECIES
                     The MLST scheme you want to use. The options can be found
                     in the 'mlst_schemes' file in the 'database' folder
@@ -818,22 +824,26 @@ sub print_txt_results{
 #                  |||||  | |        || ||    |  ||
 # Hit in genome:   ATCTCCGCCCATCATATTTATGCATACTACGA
 # --------------------------------------------------------------------
-   my ($resultsAndSettingsArray, $geneResultsHash, $geneAlignQueryHash, $geneAlignHomoHash, $geneAlignHitHash) = @_;
+    my ($resultsAndSettingsArray, $geneResultsHash, $geneAlignQueryHash, $geneAlignHomoHash, $geneAlignHitHash) = @_;
 #print "print_txt_results::START\n"; #DEBUG
    my $txtresults = "";
+   my $tabr = "";
    my $allelealign = "";
    my $hits = "";
-
+   
    # INITIALIZING WARNING VARIABLE
    my $txtwarning = "";
-
+   
    # PRINTING HEADER / SETTINGS
    $txtresults .= "MLST Results\n\n";
    $txtresults .= "Sequence Type: ".@{$resultsAndSettingsArray}[0]."\n";
    $txtresults .= "Organism: ".@{$resultsAndSettingsArray}[2]."\n";
    $txtresults .= "MLST Profile: ".@{$resultsAndSettingsArray}[1]."\n\n";
-
+   #$tabr .= "MLST Results\n\n";
+   $tabr .= "Sequence Type: ".@{$resultsAndSettingsArray}[0]."\n";
+   
    # PRINTING RESULT TABLE
+   $tabr .= "Gene\t% Identity\tHSP Length\tAllele Length\tGaps\tBest match\n"; #added to print tab-separated txt file
    $txtresults .= "********************************************************************************\n";
    $txtresults .= "   GENE       % IDENTITY    HSP Length    Allele Length   GAPS     BEST MATCH   \n";
    $txtresults .= "********************************************************************************\n";
@@ -850,14 +860,12 @@ sub print_txt_results{
       # WARNING IS ADDED SINCE NOT ALL MATCHES ARE PERFECT
       if( @$array[0] ne "perfect" ){ $txtwarning = 1; } # WARNING IS ADDED IF NOT ALL MATCHES ARE PERFECT
    }#end foreach
-   $txtresults .=  "================================================================================\n\n";
-   # PRINTING WARNING (if any!)
-   if( $txtwarning == 1 ){
-      $txtresults .= "Please note that one or more loci do not match perfectly to any previously\n".
+   
+   $txtresults .= "Please note that one or more loci do not match perfectly to any previously\n".
                      "registered MLST allele. We recommend verifying the results by traditional\n".
                      "methods for MLST!\n\n\nExtended Output:\n".
                      "--------------------------------------------------------------------------------\n\n";
-   }
+   $txtresults .=  "================================================================================\n\n";
    # PRINTING THE ALLELE ARRAY
    my $printIteration = 0;
    foreach my $key (sort (keys %{$geneResultsHash})){
@@ -875,10 +883,14 @@ sub print_txt_results{
       my $hspLen =@$array[3];
       my $allLen =@$array[2];
       my $gaps =@$array[4];
-      my $matchAll = lc(@$array[5]);
-      $txtresults .= $outStr."ID: ".$identity."%, HSP/Length: ".$hspLen."/".$allLen.", Gaps: ".$gaps.", Best match: ".$matchAll."\n\n";
+      my $matchAll = @$array[5];
+      my $qStart = $QUERY_START{$matchAll};
+      my $qend = $qStart + $hspLen - 1;
+      $matchAll = lc($matchAll);
+      $tabr .= lc($key). "\t$identity\t$hspLen\t$allLen\t$gaps\t$matchAll\n";
+      $txtresults .= $outStr."ID: ".$identity."%, HSP/Length: ".$hspLen."/".$allLen.", Pos: ".$qStart."..".$qend.", Gaps: ".$gaps.", Best match: ".$matchAll."\n\n";
       $allelealign .= ">".$matchAll."\n";
-      $hits .= ">".$outStr."ID: ".$identity."%, HSP/Length: ".$hspLen."/".$allLen.", Gaps: ".$gaps.", Best match: ".$matchAll."\n";
+      $hits .= ">".$outStr."ID: ".$identity."%, HSP/Length: ".$hspLen."/".$allLen.", Pos: ".$qStart."..".$qend.", Gaps: ".$gaps.", Best match: ".$matchAll."\n";
       #now print the alleles
       my $queryArray = ${$geneAlignQueryHash}{$key};
       my $homoArray = ${$geneAlignHomoHash}{$key};
@@ -895,7 +907,16 @@ sub print_txt_results{
       }#end for
       $txtresults .= "\n--------------------------------------------------------------------------------\n\n";
    }#end foreach
+   
+   # PRINTING WARNING (if any!)
+   if( $txtwarning == 1 ){
+      $tabr .= "Please note that one or more loci do not match perfectly to any previously registered MLST".
+               "allele. We recommend verifying the results by traditional methods for MLST!\n";
 
+   }
+   $tabr .= "\nOrganism: ".@{$resultsAndSettingsArray}[2]."\n";
+   $tabr .= "MLST Profile: ".@{$resultsAndSettingsArray}[1]."\n";
+   
    #WRITING standard_output.txt
    open (TXTRESULTS, '>'."$dir/".'standard_output.txt') || die("Error! Could not write to standard_output.txt");
    print TXTRESULTS $txtresults;
@@ -910,4 +931,10 @@ sub print_txt_results{
    open (ALLELE, '>'."$dir/".'MLST_allele_seq.fsa') || die("Error! Could not write to MLST_allele_seq.fsa");
    print ALLELE $allelealign;
    close (ALLELE);
+   
+      #WRITING standard_output.tab
+   open (TABRESULTS, '>'."$dir/".'results_tab.txt') || die("Error! Could not write to results_tab.txt");
+   print TABRESULTS $tabr;
+   close (TABRESULTS);
+   
 }#end sub(print_txt_results)
