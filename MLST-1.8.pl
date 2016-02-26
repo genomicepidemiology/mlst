@@ -1,4 +1,4 @@
-#!/usr/bin/evn perl
+#!/usr/bin/env perl
 
 # %% Setting up %%
 print STDERR "Start\n";
@@ -12,7 +12,6 @@ use Bio::SeqIO;
 use Bio::Seq;
 use Bio::SearchIO;
 use Try::Tiny::Retry;
-use 5.010000;
 
 # PROGRAM VARIABLES
 use constant PROGRAM_NAME            => 'MLST-1.8.pl';
@@ -932,7 +931,7 @@ sub print_txt_results{
    print ALLELE $allelealign;
    close (ALLELE);
    
-      #WRITING standard_output.tab
+   #WRITING standard_output.tab
    open (TABRESULTS, '>'."$dir/".'results_tab.txt') || die("Error! Could not write to results_tab.txt");
    print TABRESULTS $tabr;
    close (TABRESULTS);
