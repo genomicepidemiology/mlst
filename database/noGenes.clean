@@ -19,6 +19,7 @@ bpseudomallei.txt: 7
 brachyspira.txt:	7
 bsubtilis.txt: 7
 campylobacter.txt:	7
+cbotulinum.txt:	7
 cconcisus.txt:	7
 cdifficile.txt:	7
 cdifficile_2.txt: 7
@@ -54,6 +55,7 @@ inchi1.txt: 6
 inchi2.txt: 2
 inci1.txt:	5
 incn.txt: 3
+kkingae.txt: 6
 koxytoca.txt:	7
 kpneumoniae.txt: 7
 kseptempunctata.txt: 2
@@ -61,6 +63,7 @@ lcasei.txt: 7
 leptospira.txt: 7
 leptospira_2.txt:	7
 leptospira_3.txt:	6
+llactis.txt:	6
 lmonocytogenes.txt: 7
 lsalivarius.txt:	5
 mabscessus.txt:	7
@@ -84,6 +87,7 @@ pmultocida_multihost.txt:	7
 pmultocida_rirdc.txt:	7
 ppentosaceus.txt:	7
 pshigelloides.txt: 5
+ranatipestifer.txt:	7
 sagalactiae.txt: 7
 saureus.txt: 7
 scanis.txt:	7
@@ -92,6 +96,7 @@ senterica.txt:	7
 sepidermidis.txt: 7
 sgallolyticus.txt:	7
 sinorhizobium.txt:	10
+slugdunensis.txt: 7
 smaltophilia.txt:	7
 soralis.txt: 7
 spneumoniae.txt:	7
@@ -104,8 +109,9 @@ streptomyces.txt:	6
 suberis.txt:	7
 szooepidemicus.txt:	7
 taylorella.txt:	7
+tenacibaculum.txt:	7
 vcholerae.txt:	7
-vibrio.txt: 5
+vibrio.txt: 4
 vparahaemolyticus.txt:	7
 vtapetis.txt:	10
 vvulnificus.txt:	10
