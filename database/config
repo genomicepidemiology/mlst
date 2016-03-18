@@ -5,7 +5,7 @@ abaumannii	Acinetobacter baumannii#1	MLST alleles for Acinetobacter baumannii#1
 abaumannii_2	Acinetobacter baumannii#2	MLST alleles for Acinetobacter baumannii#2
 achromobacter	Achromobacter spp.	MLST alleles for Achromobacter spp.
 aeromonas	Aeromonas spp.	MLST alleles for Aeromonas spp.
-#afumigatus	Aspergillus fumigatus	MLST alleles for Aspergillus fumigatus
+afumigatus	Aspergillus fumigatus	MLST alleles for Aspergillus fumigatus
 aphagocytophilum	Anaplasma phagocytophilum	MLST alleles for Anaplasma phagocytophilum
 arcobacter	Arcobacter spp.	MLST alleles for Arcobacter spp.
 bburgdorferi	Borrelia burgdorferi	MLST alleles for Borrelia burgdorferi
@@ -22,7 +22,7 @@ bpilosicoli	Brachyspira pilosicoli	MLST alleles for Brachyspira pilosicoli
 bpseudomallei	Burkholderia pseudomallei	MLST alleles for Burkholderia pseudomallei
 brachyspira	Brachyspira spp.	MLST alleles for Brachyspira spp.
 bsubtilis	Bacillus subtilis	MLST alleles for Bacillus subtilis
-#calbicans	Candida albicans	MLST alleles for Candida albicans
+calbicans	Candida albicans	MLST alleles for Candida albicans
 campylobacter	Campylobacter jejuni	MLST alleles for Campylobacter jejuni
 cbotulinum	Clostridium botulinum	MLST alleles for Clostridium botulinum
 cconcisus	Campylobacter concisus/curvus	MLST alleles for Campylobacter concisus/curvus
@@ -39,12 +39,12 @@ cinsulaenigrae	Campylobacter insulaenigrae	MLST alleles for Campylobacter insula
 clanienae	Campylobacter lanienae	MLST alleles for Campylobacter lanienae
 clari	Campylobacter lari	MLST alleles for Campylobacter lari
 cmaltaromaticum	Carnobacterium maltaromaticum	MLST alleles for Carnobacterium maltaromaticum
-#cneoformans	Cryptococcus neoformans	MLST alleles for Cryptococcus neoformans
+cneoformans	Cryptococcus neoformans	MLST alleles for Cryptococcus neoformans
 cronobacter	Cronobacter spp.	MLST alleles for Cronobacter spp.
 csepticum	Clostridium septicum	MLST alleles for Clostridium septicum
 csinensis	Clonorchis sinensis	MLST alleles for Clonorchis sinensis
 csputorum	Campylobacter sputorum	MLST alleles for Campylobacter sputorum
-#ctropicalis	Candida tropicalis	MLST alleles for Candida tropicalis
+ctropicalis	Candida tropicalis	MLST alleles for Candida tropicalis
 cupsaliensis	Campylobacter upsaliensis	MLST alleles for Campylobacter upsaliensis
 ecloacae	Enterobacter cloacae	MLST alleles for Enterobacter cloacae
 ecoli	Escherichia coli#1	MLST alleles for Escherichia coli#1
@@ -66,7 +66,7 @@ lcasei	Lactobacillus casei	MLST alleles for Lactobacillus casei
 leptospira	Leptospira spp.	MLST alleles for Leptospira spp.
 leptospira_2	Leptospira spp.#2	MLST alleles for Leptospira spp.#2
 leptospira_3	Leptospira spp.#3	MLST alleles for Leptospira spp.#3
-#listeria	Listeria spp.	MLST alleles for Listeria spp.
+listeria	Listeria spp.	MLST alleles for Listeria spp.
 llactis	Lactococcus lactis	MLST alleles for Lactococcus lactis
 lmonocytogenes	Listeria monocytogenes	MLST alleles for Listeria monocytogenes
 lsalivarius	Lactobacillus salivarius	MLST alleles for Lactobacillus salivarius
