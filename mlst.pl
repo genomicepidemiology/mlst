@@ -20,7 +20,7 @@ use constant VERSION                 => '1.8';
 
 #Global variables
 my $MLST_DB;
-my $mlst_scheme_file;
+my $db_config_file;
 my $BLAST;
 my $BLASTALL;
 my $FORMATDB;
@@ -47,7 +47,7 @@ if (not defined $BLAST) {
 }
 if (not defined $MLST_DB) {
    $MLST_DB = "database";
-   $mlst_scheme_file = "database/mlst_schemes";
+   $db_config_file = "database/config";
 }
 if (not defined $dir) {
   $dir = ".";
@@ -82,11 +82,11 @@ catch{ die $_ };
 # Mapping the mlst profiles to organism names (data fetched from tab-separated file)
 # Printed out as run information to the user
 my %mlstProfiles=();
-open(IN,'<',$mlst_scheme_file) or die "Can't read $mlst_scheme_file: $!\n\n";
+open(IN,'<',$db_config_file) or die "Can't read $db_config_file: $!\n\n";
 while (defined (my $line=<IN>)){
    next LINE if /^#/; # Ignore comments
    my @cols = split("\t", $line);
-   if(scalar(@cols) == 2){ $mlstProfiles{$cols[0]} = $cols[1]; }
+   if(scalar(@cols) >= 2){ $mlstProfiles{$cols[0]} = $cols[1]; }
 }
 close IN;
 
@@ -478,7 +478,6 @@ push(@RESULTS_AND_SETTINGS_ARRAY, $InFile);
 #### TXT PRINTING ####
 print_txt_results(\@RESULTS_AND_SETTINGS_ARRAY, \%GENE_RESULTS_HASH, \%GENE_ALIGN_QUERY_HASH, \%GENE_ALIGN_HOMO_HASH, \%GENE_ALIGN_HIT_HASH);
 
-print STDERR "Done\n";
 exit;
 
 # --------------------------------------------------------------------
@@ -494,7 +493,7 @@ sub commandline_parsing {
     while (scalar @ARGV) {
         if ($ARGV[0] =~ m/^-d$/) {
             $MLST_DB = $ARGV[1];
-            $mlst_scheme_file = "$MLST_DB/mlst_schemes";
+            $db_config_file = "$MLST_DB/config";
             shift @ARGV;
             shift @ARGV;
         }
@@ -721,9 +720,9 @@ OPTIONS
                     The folder you want to have your output files stored.
                     If not specified the program store the output in your
                     current directory.
-    -s SPECIES
+    -s SCHEME
                     The MLST scheme you want to use. The options can be found
-                    in the 'mlst_schemes' file in the 'database' folder
+                    in the config file in the database directory
 
 Example of use with the 'database' folder located in the current directory and Blast added to the user's path
 
@@ -791,10 +790,10 @@ sub AlignRight { #string, minimumStrLenght
 }
 
 # --------------------------------------------------------------------
-# print_txt_results creates 3 files: Hit_in_genome_seq.fsa, MLST_allele_seq.fsa and standard_output.txt
+# print_txt_results creates 3 files: Hit_in_genome_seq.fsa, MLST_allele_seq.fsa and results.txt
 #
 sub print_txt_results{
-# %% standard_output.txt is a text result table and list of alleles  %%
+# %% results.txt is a text result table and list of alleles  %%
 # Generates a tab separated text table containing the scripts results and alignment
 # eg.
 # MLST Results
@@ -916,8 +915,8 @@ sub print_txt_results{
    $tabr .= "\nOrganism: ".@{$resultsAndSettingsArray}[2]."\n";
    $tabr .= "MLST Profile: ".@{$resultsAndSettingsArray}[1]."\n";
    
-   #WRITING standard_output.txt
-   open (TXTRESULTS, '>'."$dir/".'standard_output.txt') || die("Error! Could not write to standard_output.txt");
+   #WRITING results.txt
+   open (TXTRESULTS, '>'."$dir/".'results.txt') || die("Error! Could not write to results.txt");
    print TXTRESULTS $txtresults;
    close (TXTRESULTS);
 
