@@ -9,33 +9,59 @@ Documentation
 
 ## What is it?
 
-The MLST service contains one perl script *MLST-1.8.pl* which is the script of the lates
+The MLST service contains one perl script *mlst.pl* which is the script of the lates
 version of the MLST service. The method enables investigators to determine the ST based on WGS data.
+
+## Content of the repository
+1. mlst.pl      - the program
+2. INSTALL_DB   - shell script for downloading the MLST database
+3. UPDATE_DB    - shell script for updating the database to the newest version
+4. VALIDATE_DB  - python script for verifying the database contains all
+                  required files 
+5. brew.sh      - shell script for installing dependencies
+6. makefile     - make script for installing dependencies
+7. test.fsa     - test fasta file
 
 ## Installation
 
-To use the service some data needs to be pre-installed: *database*, Blast and several Perl dependencies.
+Setting up ResFinder
+```bash
+# Go to wanted location for resfinder
+cd /path/to/some/dir
+# Clone and enter the mlst directory
+git clone https://bitbucket.org/genomicepidemiology/mlst.git
+cd mlst
+```
 
-The folder *database* includes all the MLST schemes and needs to be updataed to get the best results.
-The datasets are extracted from the http://pubmlst.org/ webside weekly and can be downloaded from
-http://cge.cbs.dtu.dk/services/data.php. The folder also includes the *mlst_schemes* file which is
-used by the program but also contains the different MLST schemes provided and what to write
-in the commandline to use a particular shceme.
+Installing up the MLST database
+```bash
+cd /path/to/mlst
+./INSTALL_DB database
 
+# Check all DB scripts works, and validate the database is correct
+./UPDATE_DB database
+./VALIDATE_DB database
+```
+
+Installing dependencies:
 Perlbrew is used to manage isolated perl environments. To install it run
 ```bash
 bash brew.sh
 ```
 
-This will install Perlbrew with Perl 5.10, along with CPAN minus as package manager.
-Blast will also be installed when running brew.sh if BlastAll and FormatDB are not already installed and place in the user's path.
-After running brew.sh and installing Blast add this command to the end of your ~/bash_profile to add BlastAll and FormatDB to the user's path
+This will install Perlbrew with Perl 5.10, along with CPAN minus as
+package manager.
+Blast will also be installed when running brew.sh if BlastAll and FormatDB are
+not already installed and place in the user's path.
+After running brew.sh and installing Blast add this command to the end of your
+~/bash_profile to add BlastAll and FormatDB to the user's path
 
 ```bash
 export PATH=$PATH:blast-2.2.26/bin
 ```
 
-If you want to download the two external tools from the Blast package, BlastAll and FormatDB, yourself go to
+If you want to download the two external tools from the Blast package, BlastAll
+and FormatDB, yourself go to
 ```url
 ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST
 ```
@@ -52,8 +78,10 @@ export PATH=$PATH:/path/to/blast-folder/bin
 
 where path/to/blast-folder is the folder you unzipped.
 
-The Perl dependencies works in Perl 5.10 and is installed with CPAN minus as package manager.
-If you have choosen to install a local perl when running *brew.sh* the Perl dependencies can be installed by the following
+The Perl dependencies works in Perl 5.10 and is installed with CPAN minus as
+package manager.
+If you have choosen to install a local perl when running *brew.sh* the Perl
+dependencies can be installed by the following
 ```bash
 perlbrew use perl-5.10.0
 make install
@@ -64,7 +92,8 @@ When running MLST you also need to do it through perlbrew
 perlbrew use perl-5.10.0
 ```
 
-If you are using Perl 5.10.0 you can just run MLST directly in the command-line after the dependencies are installed with
+If you are using Perl 5.10.0 you can just run MLST directly in the command-line
+after the dependencies are installed with
 ```bash
 make install
 ```
@@ -74,7 +103,8 @@ If another version of Perl is used the Perl modules might fail when running the 
 The scripts are self contained. You just have to copy them to where they should
 be used. Only the *database* folder needs to be updated mannually.
 
-Remember to add the program to your system path if you want to be able to invoke the program without calling the full path.
+Remember to add the program to your system path if you want to be able to invoke the 
+program without calling the full path.
 If you don't do that you have to write the full path to the program when using it.
 
 ## Usage
