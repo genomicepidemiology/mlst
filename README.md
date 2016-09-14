@@ -112,7 +112,7 @@ If you don't do that you have to write the full path to the program when using i
 The program can be invoked with the -h option to get help and more information of the service.
 
 ```bash
-Usage: perl MLST.pl [options]
+Usage: perl mlst.pl [options]
 
 Options:
 
@@ -137,11 +137,11 @@ Options:
 
 #### Example of use with the *database* folder located in the current directory and Blast added to the user's path
 ```perl
-    perl MLST.pl -i test.fsa -o OUTFOLDER -s ecoli
+    perl mlst.pl -i test.fsa -o OUTFOLDER -s ecoli
 ```
 #### Example of use with the *database* and *blast-2.2.26* folders loacted in other directories
 ```perl
-    perl MLST.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa \
+    perl mlst.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa \
      -o OUTFOLDER -s ecoli
 ```
 
