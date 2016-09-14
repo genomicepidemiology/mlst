@@ -24,7 +24,7 @@ version of the MLST service. The method enables investigators to determine the S
 
 ## Installation
 
-Setting up ResFinder
+Setting up MLST
 ```bash
 # Go to wanted location for resfinder
 cd /path/to/some/dir
