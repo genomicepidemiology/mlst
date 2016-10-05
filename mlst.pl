@@ -480,6 +480,10 @@ push(@RESULTS_AND_SETTINGS_ARRAY, $InFile);
 #### TXT PRINTING ####
 print_txt_results(\@RESULTS_AND_SETTINGS_ARRAY, \%GENE_RESULTS_HASH, \%GENE_ALIGN_QUERY_HASH, \%GENE_ALIGN_HOMO_HASH, \%GENE_ALIGN_HIT_HASH);
 
+system("rm -r error.log");
+system("rm -r formatdb.log");
+system("rm -r  $tmp_dir/");
+
 exit;
 
 # --------------------------------------------------------------------
@@ -584,9 +588,6 @@ sub get_blast_run {
          }
       }
    }
-   system("rm -r error.log");
-   system("rm -r formatdb.log");
-   system("rm -r  $tmp_dir/");
    return @blast;
 }
 
