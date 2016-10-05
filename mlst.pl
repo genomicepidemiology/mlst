@@ -7,7 +7,6 @@ print STDERR "Start\n";
 use strict;
 use Data::Dumper;
 use Getopt::Long qw(:config no_ignore_case no_auto_abbrev pass_through);
-use File::Temp qw/ tempfile tempdir /;
 use Bio::SeqIO;
 use Bio::Seq;
 use Bio::SearchIO;
@@ -53,6 +52,9 @@ if (not defined $dir) {
   $dir = ".";
 }
 
+# Making tmp directory for BLST output
+my $tmp_dir = "$dir/tmp";
+mkdir("$dir/tmp");
 
 # --------------------------------------------------------------------
 # %% Main Program %%
@@ -67,7 +69,7 @@ retry{
    $Seqs_input  = $InFile ne "" ? read_seqs(-file => $InFile, -format => $IFormat) :
                                        read_seqs(-fh => \*STDIN,   -format => $IFormat);
 
-   @Blast_lines = get_blast_run(-d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
+   @Blast_lines = get_blast_run($tmp_dir, $Organism, -d => $Seqs_input, -i => $Seqs_mlst, %ARGV);
 }
 catch{ die $_ };
 
@@ -532,28 +534,25 @@ sub commandline_parsing {
 }
 
 sub get_blast_run {
-   my %args        = @_;
-   my ($fh, $file) = tempfile( DIR => '/tmp', UNLINK => 1);
-   output_sequence(-fh => $fh, seqs => delete $args{-d}, -format => 'fasta');
-   die "Error! Could not build blast database" if (system("$FORMATDB -p F -i $file"));
-   my $query_file = $file.".blastpipe";
-   #`mknod $query_file p`;
-   #if ( !fork() ) {
-   #   open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
-   #   output_sequence(-fh => \*QUERY, seqs => $args{-i}, -format => 'fasta');
-   #   close QUERY;
-   #   exit(0);
-   #}
-   open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
-   output_sequence(-fh => \*QUERY, seqs => $args{-i}, -format => 'fasta');
-   close QUERY;
+   my ($tmp_dir, $org, %args)        = @_;
+   #my $fh = $tmp_dir;
+   my $file = "blast_$org.fsa";
+   #my ($fh, $file) = tempfile( DIR => '/tmp', UNLINK => 1);
+   output_sequence(-file => ">$tmp_dir/$file", seqs => delete $args{-d}, -format => 'fasta');
+   die "Error! Could not build blast database" if (system("$FORMATDB -p F -i $tmp_dir/$file"));
+   system("rm -r formatdb.log");
+   system("rm -r  $tmp_dir/blast_ecoli.fsa.n*");
+   my $query_file = "$file.blastpipe";
+
+   #open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
+   output_sequence(-file => ">$tmp_dir/$query_file", seqs => $args{-i}, -format => 'fasta');
+   #close QUERY;
    
    delete $args{-i};
 
    my $cmd = join(" ", %args);
-   my ($fh2, $file2) = tempfile( DIR => '/tmp', UNLINK => 1);
-   print $fh2 `$BLASTALL -d $file -i $query_file $cmd`;
-   close $fh2;
+   my $file2 = "$tmp_dir/$file.blast_output";
+   system("$BLASTALL -d $tmp_dir/$file -i $tmp_dir/$query_file -o $file2 $cmd");
 
    my $report = new Bio::SearchIO( -file   => $file2,
                                    -format => "blast"
@@ -586,7 +585,6 @@ sub get_blast_run {
          }
       }
    }
-   unlink 'formatdb.log', 'error.log', "$file.blastpipe" , "$file.nhr" , "$file.nin" , "$file.nsq";
    return @blast;
 }
 
@@ -664,12 +662,13 @@ sub output_sequence {
    my %args = @_;
    my $seqs_ref = delete $args{seqs};
    my $i = 1;
-   $args{-fh} = \*STDOUT unless (exists $args{-fh} or exists $args{-file});
-   if (exists $args{tempdir}) {
-      my $tempdir = delete $args{tempdir};
-      ($args{-fh}, $args{-file}) = tempfile(DIR => $tempdir, SUFFIX => ".".$args{-format})
-   }
+   #$args{-fh} = \*STDOUT unless (exists $args{-fh} or exists $args{-file});
+   #if (exists $args{tempdir}) {
+   #   my $tempdir = delete $args{tempdir};
+   #   ($args{-fh}, $args{-file}) = tempfile(DIR => $tempdir, SUFFIX => ".".$args{-format})
+   #}
    my $file = delete $args{-file} if (exists $args{-fh} && exists $args{-file}); # Stupid BioPerl cannot handle that both might be set...
+   print %args;
    my $seq_out = Bio::SeqIO->new(%args);
    $args{-file} = $file if (defined $file);
    for my $seq (@{ $seqs_ref }) {
