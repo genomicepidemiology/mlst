@@ -534,14 +534,14 @@ sub commandline_parsing {
 }
 
 sub get_blast_run {
-   my ($tmp_dir, $org, %args)        = @_;
+   my ($tmp_dir, $org, %args) = @_;
    #my $fh = $tmp_dir;
    my $file = "blast_$org.fsa";
    #my ($fh, $file) = tempfile( DIR => '/tmp', UNLINK => 1);
    output_sequence(-file => ">$tmp_dir/$file", seqs => delete $args{-d}, -format => 'fasta');
    die "Error! Could not build blast database" if (system("$FORMATDB -p F -i $tmp_dir/$file"));
    system("rm -r formatdb.log");
-   system("rm -r  $tmp_dir/blast_ecoli.fsa.n*");
+   system("rm -r  $tmp_dir/$file.n*");
    my $query_file = "$file.blastpipe";
 
    #open QUERY, ">> $query_file" || die("Error! Could not perform blast run");
@@ -586,6 +586,8 @@ sub get_blast_run {
       }
    }
    return @blast;
+   system("rm -r  $tmp_dir/$file");
+   system("rm -r  $tmp_dir/$query_file");
 }
 
 ###################################
