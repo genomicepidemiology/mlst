@@ -47,10 +47,12 @@ Only the *database* folder needs to be updated mannually.
 
 The program can be invoked with the -h option to get help and more information of the service.
 
+
 ## Web-server
 
 A webserver implementing the methods is available at the [CGE website](http://www.genomicepidemiology.org/) and can be found here:
 https://cge.cbs.dtu.dk/services/MLST/
+
 
 Citation
 =======
