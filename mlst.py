@@ -106,7 +106,7 @@ def import_profile(database, species, loci_list):
 
     return st_profiles
 
-def st_typing(st_profiles, allele_matches, loci_list):s
+def st_typing(st_profiles, allele_matches, loci_list):
     """
     Takes the path to a pickled dictionary, the inp list of the allele 
     number that each loci has been assigned, and an output file string
