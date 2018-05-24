@@ -2,8 +2,8 @@
 
 import os, sys, re, time, pprint
 import argparse, subprocess
-from blaster.blaster import Blaster
-from CGEFinder.cgefinder import CGEFinder
+from CGE.blaster.blaster  import Blaster
+from CGE.cgefinder import CGEFinder
 from cgecore.alignment import extended_cigar
 import json, gzip
 from tabulate import tabulate
@@ -70,7 +70,7 @@ def get_file_format(input_files):
             invalid_files.append("other")
     if len(set(file_format)) != 1:
         return "mixed"
-    return "".join(file_format)
+    return ",".join(set(file_format))
 
 def import_profile(database, species, loci_list):
     """Import all possible allele profiles with corresponding st's
@@ -81,7 +81,6 @@ def import_profile(database, species, loci_list):
     # Open allele profile file from database
     profile_file = open("{0}/{1}/{1}.tsv".format(database, species), "r")
     profile_header = profile_file.readline().strip().split("\t")[1:len(loci_list)+1]
-    print(profile_header)
     
     # Create dict for looking up st-types with locus/allele combinations
     st_profiles = {}
@@ -107,7 +106,7 @@ def import_profile(database, species, loci_list):
 
     return st_profiles
 
-def st_typing(st_profiles, allele_matches, loci_list):
+def st_typing(st_profiles, allele_matches, loci_list):s
     """
     Takes the path to a pickled dictionary, the inp list of the allele 
     number that each loci has been assigned, and an output file string
@@ -126,7 +125,6 @@ def st_typing(st_profiles, allele_matches, loci_list):
     # Check the quality of the alle hits
     for locus in allele_matches:
         allele = allele_matches[locus]["allele"]
-        print(allele)
  
         # Check if allele is marked as a non-perfect match. Save mark and write note.
         if "?*" in allele:
@@ -164,13 +162,14 @@ def st_typing(st_profiles, allele_matches, loci_list):
             if hit in st_hits_counter:
                 st_hits_counter[hit] += 1
             else:
-                st_hits_counter[hit] = 1
+               st_hits_counter[hit] = 1
             if max_count < st_hits_counter[hit]:
                 max_count = st_hits_counter[hit]
                 best_hit = hit
 
     # Check if allele profile match found st 100 %
-    similarity = round(float(max_count)/(len(loci_list) - 1)*100, 2)
+    similarity = round(float(max_count)/len(loci_list)*100, 2)
+
     if similarity != 100:
         st = "Unknown"
         nearest_sts = []
@@ -188,9 +187,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
     return st, note, nearest_sts
 
 def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, sbjct_aligns):
-    for locus, locus_info in allele_matches.items():
-
-        
+    for locus, locus_info in allele_matches.items():        
         allele_name = locus_info["allele_name"]
         if allele_name == "No hit found":
             continue
@@ -314,7 +311,7 @@ if file_format == "fastq":
     method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
                                 threshold=threshold, kma_path=method_path, sample_name=sample_name,
                                 inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
-                                kma_gapextend=-1, kma_penalty=3, kma_reward=1)
+                                kma_gapextend=-1, kma_penalty=-3, kma_reward=1)
 
 elif file_format == "fasta":
     # Assert that only one fasta file is inputted
