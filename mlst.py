@@ -2,9 +2,9 @@
 
 import os, sys, re, time, pprint
 import argparse, subprocess
-from CGE.blaster.blaster  import Blaster
+
+from cgecore.alignment import extended_cigar, Blaster
 from CGE.cgefinder import CGEFinder
-from cgecore.alignment import extended_cigar
 import json, gzip
 from tabulate import tabulate
 
