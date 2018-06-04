@@ -3,8 +3,9 @@
 import os, sys, re, time, pprint
 import argparse, subprocess
 
-from cgecore.alignment import extended_cigar, Blaster
+from cgecore.alignment import extended_cigar
 from CGE.cgefinder import CGEFinder
+from CGE.blaster.blaster import Blaster
 import json, gzip
 from tabulate import tabulate
 
@@ -236,15 +237,15 @@ parser = argparse.ArgumentParser(description="")
 # Posotional arguments
 parser.add_argument("-i", "--infile",
                     help="FASTA or FASTQ files to do MLST on.",
-                    nargs="+")
+                    nargs="+", required=True)
 # Optional arguments
 parser.add_argument("-o", "--outdir",
                     help="Output directory.",
                     default="MLST_out.txt")
 parser.add_argument("-s", "--species",
-                    help="species database used for MLST prediction")
+                    help="species database used for MLST prediction", required=True)
 parser.add_argument("-p", "--database",
-                    help="Directory containing the databases.")#,
+                    help="Directory containing the databases.", required=True)#,
                     #default="/home/data1/services/MLST/database_repository/mlst-2.0_db/")
 parser.add_argument("-t", "--tmp_dir",
                     help="Temporary directory for storage of the results\
@@ -258,6 +259,10 @@ parser.add_argument("-mp", "--method_path",
 parser.add_argument("-x", "--extented_output",
                     help="Give extented output with allignment files, template and query hits in fasta and\
                           a tab seperated file with allele profile results", action="store_true")
+#parser.add_argument("-c", "--coverage",
+#                    help="Minimum template coverage required", default = 0.6)
+#parser.add_argument("-i", "--identity",
+#                    help="Minimum template identity required", default = 0.9)
 args = parser.parse_args()
 
 #TODO what are the clonal complex data used for??
@@ -265,23 +270,23 @@ args = parser.parse_args()
 # TODO error handling
 infile = args.infile
 # Check that outdir is an existing dir...
-outdir = args.outdir
+outdir = os.path.abspath(args.outdir)
 species = args.species
-database = args.database
-tmp_dir = args.tmp_dir
+database = os.path.abspath(args.database)
+tmp_dir = os.path.abspath(args.tmp_dir)
 # Check if method path is executable
 method_path = args.method_path
 extented_output = args.extented_output
 
-min_cov = 0.6   # ????
-threshold = 0.9 # ????
+min_cov = 0.6   # args.coverage
+threshold = 0.9 # args.identity
 
 # Check file format (fasta, fastq or other format)
 file_format = get_file_format(infile)
 
 db_path = "{}/{}/".format(database, species)
 
-config_file = open(database + "config","r")
+config_file = open(database + "/config","r")
 
 # Get loci list from config file
 for line in config_file:
