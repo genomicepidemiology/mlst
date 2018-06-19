@@ -4,8 +4,8 @@ import os, sys, re, time, pprint, io, shutil
 import argparse, subprocess
 
 from cgecore.alignment import extended_cigar
-from CGE.cgefinder import CGEFinder
-from CGE.blaster.blaster import Blaster
+from cgecore.blaster import Blaster
+from cgecore.cgefinder import CGEFinder
 import json, gzip
 from tabulate import tabulate
 

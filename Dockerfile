@@ -10,7 +10,6 @@ RUN apt-get update -qq; \
     wget \
     python3-pip \
     ncbi-blast+ \
-    vim \
     libz-dev \
     ; \
     rm -rf /var/cache/apt/* /var/lib/apt/lists/*;
@@ -18,19 +17,12 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
-RUN pip3 install -U biopython tabulate cgecore==1.2.2;
+RUN pip3 install -U biopython tabulate cgecore==1.3.0;
 
 # Install kma 
-RUN wget -O - https://bitbucket.org/genomicepidemiology/kma/get/master.tar.gz | \
-    tar xzf - --strip-components=1 --wildcards *.c; \
-    gcc -O3 -o /usr/local/bin/kma KMA.c -lm -lpthread -lz && \
-    gcc -O3 -o /usr/local/bin/kma_index KMA_index.c -lm
-
-# Install cgefinder for kma and blast use 
-RUN mkdir -p /usr/src/CGE; \
-    git clone --recursive -b 4.0 https://bitbucket.org/genomicepidemiology/resfinder.git; \
-    mv resfinder/cge/cgefinder.py resfinder/cge/blaster/ resfinder/cge/__init__.py /usr/src/CGE; \
-    rm -rf resfinder
+RUN git clone https://bitbucket.org/genomicepidemiology/kma.git; \
+    cd kma && make; \
+    mv kma* /bin/
 
 # TEST setup
 RUN mkdir /database /test

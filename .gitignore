@@ -6,4 +6,5 @@ output
 error.log
 CGE
 *~
-
+test/kma_*
+test/*.json
