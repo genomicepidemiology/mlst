@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND Teletype
 RUN pip3 install -U biopython tabulate cgecore==1.3.0;
 
 # Install kma 
-RUN git clone https://bitbucket.org/genomicepidemiology/kma.git; \
+RUN git clone --branch 0.14.5 --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
     cd kma && make; \
     mv kma* /bin/
 
@@ -41,7 +41,6 @@ RUN echo "alias ls='ls -h --color=tty'\n"\
 "alias du='du -hP --max-depth=1'\n"\
 "alias cwd='readlink -f .'\n"\
 "PATH=$PATH\n">> ~/.bashrc
-
 
 WORKDIR /workdir
 
