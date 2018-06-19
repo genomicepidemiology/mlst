@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, re, time, pprint
+import os, sys, re, time, pprint, io, shutil
 import argparse, subprocess
 
 from cgecore.alignment import extended_cigar
@@ -232,21 +232,18 @@ def text_table(headers, rows, empty_replace='-'):
    return table
 
 
-#if __name__ == "__main__":
 parser = argparse.ArgumentParser(description="")
-# Posotional arguments
+# Arguments
 parser.add_argument("-i", "--infile",
                     help="FASTA or FASTQ files to do MLST on.",
                     nargs="+", required=True)
-# Optional arguments
 parser.add_argument("-o", "--outdir",
                     help="Output directory.",
-                    default="MLST_out.txt")
+                    default=".")
 parser.add_argument("-s", "--species",
                     help="species database used for MLST prediction", required=True)
 parser.add_argument("-p", "--database",
-                    help="Directory containing the databases.", required=True)#,
-                    #default="/home/data1/services/MLST/database_repository/mlst-2.0_db/")
+                    help="Directory containing the databases.", default="/database")
 parser.add_argument("-t", "--tmp_dir",
                     help="Temporary directory for storage of the results\
                           from the external software.",
@@ -254,16 +251,23 @@ parser.add_argument("-t", "--tmp_dir",
 parser.add_argument("-mp", "--method_path",
                     help="Path to the method to use (kma or blastn)\
                           if assembled contigs are inputted the path to executable blastn should be given,\
-                          if fastq files are given path to executable kma should be given",
-                    default="blastn")
+                          if fastq files are given path to executable kma should be given")
 parser.add_argument("-x", "--extented_output",
                     help="Give extented output with allignment files, template and query hits in fasta and\
                           a tab seperated file with allele profile results", action="store_true")
+parser.add_argument("-q", "--quiet", action="store_true")
+
+
 #parser.add_argument("-c", "--coverage",
 #                    help="Minimum template coverage required", default = 0.6)
 #parser.add_argument("-i", "--identity",
 #                    help="Minimum template identity required", default = 0.9)
 args = parser.parse_args()
+
+if args.quiet:
+    f = open('nul', 'w')
+    sys.stdout = f
+    
 
 #TODO what are the clonal complex data used for??
 
@@ -297,6 +301,10 @@ for line in config_file:
 
 # Call appropriate method (kma or blastn) based on file format 
 if file_format == "fastq":
+    if not method_path:
+        method_path = "kma"
+        if shutil.which(method_path) == None:
+            sys.exit("No valid path to a kma program was provided. Use the -mp flag to provide the path.")
     # Check the number of files
     if len(infile) == 1:
         infile_1 = infile[0]
@@ -319,6 +327,10 @@ if file_format == "fastq":
                                 kma_gapextend=-1, kma_penalty=-3, kma_reward=1)
 
 elif file_format == "fasta":
+    if not method_path:
+        method_path = "blastn"
+        if shutil.which(method_path) == None:
+            sys.exit("No valid path to a blastn program was provided. Use the -mp flag to provide the path.")
     # Assert that only one fasta file is inputted
     assert len(infile) == 1, "Only one input file accepted for assembled data"
     infile = infile[0]
@@ -487,7 +499,7 @@ if extented_output:
         # Write allele results to tsv table
         row = [locus, identity, coverage, align_len, sbj_len, gaps, allele_name_w_mark]
         rows.append(row)
-        table_file.write("\t".join(row) + "\n")
+        #
 
         if allele_name == "No hit found":
             continue
@@ -515,9 +527,11 @@ if extented_output:
             #print(sbjct_seq[i:i+70])
             sbjct_file.write(sbjct_seq[i:i+60] + "\n")
 
-    # Write Allele profile results table 
+    # Write Allele profile results tables in results file and table file
+    rows.sort(key=lambda x: x[0])
     result_file.write(text_table(table_header, rows))
-
+    for row in rows:
+        table_file.write("\t".join(row) + "\n")
     # Write any notes
     if note != "":
        result_file.write("\nNotes: {}\n\n".format(note))
@@ -531,3 +545,6 @@ if extented_output:
     sbjct_file.close()
     table_file.close()
     result_file.close()
+
+if args.quiet:
+    f.close()
