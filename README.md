@@ -16,6 +16,7 @@ version of the MLST service. The method enables investigators to determine the S
 1. mlst.py      - the program
 2. test.fsa     - test fasta file
 3. README.md
+4. Dockerfile   - dockerfile for building the mlst docker container
 
 ## Installation
 
@@ -27,25 +28,41 @@ cd /path/to/some/dir
 git clone https://bitbucket.org/genomicepidemiology/mlst.git
 cd mlst
 ```
+Build Docker container
+```bash
+# Build container
+docker built -t mlst .
+# Run test
+docker run --rm -it \
+       --entrypoint=/test/test.sh mlst
+```
 
 Installing up the MLST database
 ```bash
 cd /path/to/mlst
 git clone https://bitbucket.org/genomicepidemiology/mlst_db.git
-
+$MLST_DB = mlst_db
 ```
 
-Dependencies:
+Dependencies (All installed with the docker container):
 Blaster.py 
 CGEFinder.py
 KMA
 
-The scripts are self contained.
-Only the *database* folder needs to be updated mannually.
 
 ## Usage
 
 The program can be invoked with the -h option to get help and more information of the service.
+Run Docker container
+```bash
+# Run mlst container
+docker run
+# Run test
+docker run -rm -it \
+       -v $MLST_DB:/database \
+       -v $(pwd):/workdir \
+       mlst -i INPUTFILE -o . -s SPECIES
+
 
 ## Web-server
 
