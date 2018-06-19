@@ -23,7 +23,7 @@ version of the MLST service. The method enables investigators to determine the S
 
 Setting up MLST program
 ```bash
-# Go to wanted location for resfinder
+# Go to wanted location for mlst
 cd /path/to/some/dir
 # Clone and enter the mlst directory
 git clone https://bitbucket.org/genomicepidemiology/mlst.git
@@ -50,6 +50,9 @@ MLST_DB=$(pwd)
 # Install MLST database with executable kma_index program
 python3 INSTALL.py kma_index
 ```
+
+If kma_index has not bin install please install kma_index from the kma repository:
+https://bitbucket.org/genomicepidemiology/kma
 
 ## Usage
 
