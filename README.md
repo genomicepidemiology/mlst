@@ -14,13 +14,14 @@ version of the MLST service. The method enables investigators to determine the S
 
 ## Content of the repository
 1. mlst.py      - the program
-2. test.fsa     - test fasta file
+2. test     	- test folder
 3. README.md
 4. Dockerfile   - dockerfile for building the mlst docker container
 
+
 ## Installation
 
-Setting up MLST
+Setting up MLST program
 ```bash
 # Go to wanted location for resfinder
 cd /path/to/some/dir
@@ -28,46 +29,58 @@ cd /path/to/some/dir
 git clone https://bitbucket.org/genomicepidemiology/mlst.git
 cd mlst
 ```
+
 Build Docker container
 ```bash
 # Build container
-docker built -t mlst .
+docker build -t mlst .
 # Run test
 docker run --rm -it \
        --entrypoint=/test/test.sh mlst
 ```
 
-Installing up the MLST database
+#Download and install MLST database
 ```bash
-cd /path/to/mlst
-git clone https://bitbucket.org/genomicepidemiology/mlst_db.git
-$MLST_DB = mlst_db
+# Go to the directory where you want to store the mlst database
+cd /path/to/some/dir
+# Clone database from git repository (develop branch)
+git clone -b develop https://bitbucket.org/genomicepidemiology/mlst_db.git
+cd mlst_db
+MLST_DB=$(pwd)
+# Install MLST database with executable kma_index program
+python3 INSTALL.py kma_index
 ```
-
-Dependencies (All installed with the docker container):
-Blaster.py 
-CGEFinder.py
-KMA
-
 
 ## Usage
 
 The program can be invoked with the -h option to get help and more information of the service.
 Run Docker container
+
+
 ```bash
 # Run mlst container
-docker run
-# Run test
-docker run -rm -it \
+docker run --rm -it \
        -v $MLST_DB:/database \
        -v $(pwd):/workdir \
-       mlst -i INPUTFILE -o . -s SPECIES
+       mlst -i [INPUTFILE] -o . -s [SPECIES] [-x]
+```
+
+When running the docker file you have to mount 2 directory: 
+ 1. mlst_db (MLST database) downloaded from bitbucket
+ 2. An output/input folder from where the input file can be reached and an output files can be saved. 
+Here we mount the current working directory (using $pwd) and use this as the output directory, 
+the input file should be reachable from this directory as well.
+
+-i INPUTFILE	input file (fasta or fastq) relative to pwd 
+-s SPECIES 	species origin of input file
+-o OUTDIR	outpur directory relative to pwd
+-x 		extended output. Will create an extented output
 
 
 ## Web-server
 
 A webserver implementing the methods is available at the [CGE website](http://www.genomicepidemiology.org/) and can be found here:
-https://cge.cbs.dtu.dk/services/MLST/
+https://cge.cbs.dtu.dk/services/MLST-2.0/
 
 Citation
 =======

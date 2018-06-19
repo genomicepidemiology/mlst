@@ -1,5 +1,5 @@
 #!/bin/bash 
-kma_index -i /database/senterica/senterica.fsa -o /database/senterica/senterica
+kma_index -i /database/senterica/senterica.fsa -o /database/senterica/senterica &> /database/senterica/senterica.log
 mlst.py -i /test/test.fq.gz -o /test/ -s senterica -mp kma -x --quiet
 DIFF=$(diff /test/results_tab.tsv /test/test_results.tsv)
 if [ "$DIFF" == "" ] && [ "$?" == 0 ] ;
