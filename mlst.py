@@ -293,11 +293,17 @@ db_path = "{}/{}/".format(database, species)
 config_file = open(database + "/config","r")
 
 # Get loci list from config file
+species_list = []
 for line in config_file:
+    if line.startswith("#"):
+        continue
     line = line.split("\t")
+    species_list.append(line[0])
     if line[0] == species:
         organism = line[1]
         loci_list = line[2].strip().split(",")
+if species not in species_list:
+    sys.exit("{}, is not a valid species. \n\nPlease choose a species available in the database:\n{}".format(species, ", ".join(species_list)))
 
 # Call appropriate method (kma or blastn) based on file format 
 if file_format == "fastq":
