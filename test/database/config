@@ -1,0 +1,6 @@
+# Database configuration file - Describes the content of the database
+# Each species has its own directory consisting of .fsa file for each locus in the MLST scheme. additionally there is a .tsv file describing the st profiles.
+# Other important files are: config
+# species_db	species_name	folder_content(locilist,profilefile)
+senterica	Salmonella enterica	aroC,dnaN,hemD,hisD,purE,sucA,thrA
+

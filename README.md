@@ -9,160 +9,81 @@ Documentation
 
 ## What is it?
 
-The MLST service contains one perl script *mlst.pl* which is the script of the lates
+The MLST service contains one python script *mlst.py* which is the script of the lates
 version of the MLST service. The method enables investigators to determine the ST based on WGS data.
 
 ## Content of the repository
-1. mlst.pl      - the program
-2. INSTALL_DB   - shell script for downloading the MLST database
-3. UPDATE_DB    - shell script for updating the database to the newest version
-4. VALIDATE_DB  - python script for verifying the database contains all
-                  required files 
-5. brew.sh      - shell script for installing dependencies
-6. makefile     - make script for installing dependencies
-7. test.fsa     - test fasta file
+1. mlst.py      - the program
+2. test     	- test folder
+3. README.md
+4. Dockerfile   - dockerfile for building the mlst docker container
+
 
 ## Installation
 
-Setting up MLST
+Setting up MLST program
 ```bash
-# Go to wanted location for resfinder
+# Go to wanted location for mlst
 cd /path/to/some/dir
 # Clone and enter the mlst directory
 git clone https://bitbucket.org/genomicepidemiology/mlst.git
 cd mlst
 ```
 
-Installing up the MLST database
+Build Docker container
 ```bash
-cd /path/to/mlst
-./INSTALL_DB database
-
-# Check all DB scripts works, and validate the database is correct
-./UPDATE_DB database
-./VALIDATE_DB database
+# Build container
+docker build -t mlst .
+# Run test
+docker run --rm -it \
+       --entrypoint=/test/test.sh mlst
 ```
 
-Installing dependencies:
-Perlbrew is used to manage isolated perl environments. To install it run
+#Download and install MLST database
 ```bash
-bash brew.sh
+# Go to the directory where you want to store the mlst database
+cd /path/to/some/dir
+# Clone database from git repository (develop branch)
+git clone -b develop https://bitbucket.org/genomicepidemiology/mlst_db.git
+cd mlst_db
+MLST_DB=$(pwd)
+# Install MLST database with executable kma_index program
+python3 INSTALL.py kma_index
 ```
 
-This will install Perlbrew with Perl 5.10, along with CPAN minus as
-package manager.
-Blast will also be installed when running brew.sh if BlastAll and FormatDB are
-not already installed and place in the user's path.
-After running brew.sh and installing Blast add this command to the end of your
-~/bash_profile to add BlastAll and FormatDB to the user's path
-
-```bash
-export PATH=$PATH:blast-2.2.26/bin
-```
-
-If you want to download the two external tools from the Blast package, BlastAll
-and FormatDB, yourself go to
-```url
-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST
-```
-
-and download the version for your OS with the format:
-```url
-blast-version-architecture-OS.tar.gz
-```
-
-after unzipping the file, add this command to the end of your ~/bash_profile.
-```bash
-export PATH=$PATH:/path/to/blast-folder/bin
-```
-
-where path/to/blast-folder is the folder you unzipped.
-
-The Perl dependencies works in Perl 5.10 and is installed with CPAN minus as
-package manager.
-If you have choosen to install a local perl when running *brew.sh* the Perl
-dependencies can be installed by the following
-```bash
-perlbrew use perl-5.10.0
-make install
-```
-
-When running MLST you also need to do it through perlbrew
-```bash
-perlbrew use perl-5.10.0
-```
-
-If you are using Perl 5.10.0 you can just run MLST directly in the command-line
-after the dependencies are installed with
-```bash
-make install
-```
-
-If another version of Perl is used the Perl modules might fail when running the script. 
-
-The scripts are self contained. You just have to copy them to where they should
-be used. Only the *database* folder needs to be updated mannually.
-
-Remember to add the program to your system path if you want to be able to invoke the 
-program without calling the full path.
-If you don't do that you have to write the full path to the program when using it.
+If kma_index has not bin install please install kma_index from the kma repository:
+https://bitbucket.org/genomicepidemiology/kma
 
 ## Usage
 
 The program can be invoked with the -h option to get help and more information of the service.
+Run Docker container
+
 
 ```bash
-Usage: perl mlst.pl [options]
-
-Options:
-
-    -h HELP
-                    Prints a message with options and information to the screen
-    -d DATABASE
-                    The path to where you have located the database folder
-    -b BLAST
-                    The path to the location of blast-2.2.26 if it is not added
-                    to the users path (see the install guide in 'README.md')
-    -i INFILE
-                    Your input file which needs to be preassembled partial
-                    or complete genomes in fasta format
-    -o OUTFOLDER
-                    The folder you want to have your output files stored.
-                    If not specified the program will create a folder named
-                    'Output' in which the result files will be stored.
-    -s SPECIES
-                    The MLST scheme you want to use. The options can be found
-                    in the 'mlst_schemes' file in the 'database' folder
+# Run mlst container
+docker run --rm -it \
+       -v $MLST_DB:/database \
+       -v $(pwd):/workdir \
+       mlst -i [INPUTFILE] -o . -s [SPECIES] [-x]
 ```
 
-#### Example of use with the *database* folder located in the current directory and Blast added to the user's path
-```perl
-    perl mlst.pl -i test.fsa -o OUTFOLDER -s ecoli
-```
-#### Example of use with the *database* and *blast-2.2.26* folders loacted in other directories
-```perl
-    perl mlst.pl -d path/to/database -b path/to/blast-2.2.26 -i test.fsa \
-     -o OUTFOLDER -s ecoli
-```
+When running the docker file you have to mount 2 directory: 
+ 1. mlst_db (MLST database) downloaded from bitbucket
+ 2. An output/input folder from where the input file can be reached and an output files can be saved. 
+Here we mount the current working directory (using $pwd) and use this as the output directory, 
+the input file should be reachable from this directory as well.
+
+-i INPUTFILE	input file (fasta or fastq) relative to pwd 
+-s SPECIES 	species origin of input file
+-o OUTDIR	outpur directory relative to pwd
+-x 		extended output. Will create an extented output
+
 
 ## Web-server
 
 A webserver implementing the methods is available at the [CGE website](http://www.genomicepidemiology.org/) and can be found here:
-https://cge.cbs.dtu.dk/services/MLST/
-
-
-## The Latest Version
-
-
-The latest version can be found at
-https://bitbucket.org/genomicepidemiology/mlst/overview
-
-## Documentation
-
-
-The documentation available as of the date of this release can be found at
-https://bitbucket.org/genomicepidemiology/mlst/overview.
-
+https://cge.cbs.dtu.dk/services/MLST-2.0/
 
 Citation
 =======
