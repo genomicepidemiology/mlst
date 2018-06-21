@@ -1,13 +1,11 @@
 MLST
 ===================
 
-This project documents MLST service
+Multi-Locus Sequence Typing
 
 
 Documentation
 =============
-
-## What is it?
 
 The MLST service contains one python script *mlst.py* which is the script of the lates
 version of the MLST service. The method enables investigators to determine the ST based on WGS data.
@@ -44,7 +42,7 @@ docker run --rm -it \
 # Go to the directory where you want to store the mlst database
 cd /path/to/some/dir
 # Clone database from git repository (develop branch)
-git clone -b develop https://bitbucket.org/genomicepidemiology/mlst_db.git
+git clone https://bitbucket.org/genomicepidemiology/mlst_db.git
 cd mlst_db
 MLST_DB=$(pwd)
 # Install MLST database with executable kma_index program
@@ -83,7 +81,7 @@ the input file should be reachable from this directory as well.
 ## Web-server
 
 A webserver implementing the methods is available at the [CGE website](http://www.genomicepidemiology.org/) and can be found here:
-https://cge.cbs.dtu.dk/services/MLST-2.0/
+https://cge.cbs.dtu.dk/services/MLST/
 
 Citation
 =======
