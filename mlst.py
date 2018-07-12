@@ -127,7 +127,7 @@ def import_profile(database, species, loci_list):
 
 def st_typing(st_profiles, allele_matches, loci_list):
     """
-    Takes the path to a pickled dictionary, the inp list of the allele 
+    Takes the path to a dictionary, the inp list of the allele 
     number that each loci has been assigned, and an output file string
     where the found st type and similaity is written into it.  
     """
@@ -143,19 +143,17 @@ def st_typing(st_profiles, allele_matches, loci_list):
 
     # Check the quality of the alle hits
     for locus in allele_matches:
-        
-             
         allele = allele_matches[locus]["allele"]
  
         # Check if allele is marked as a non-perfect match. Save mark and write note.
         if "?*" in allele:
-            note += "* {}: Completely imperfect hit, ST can not be trusted!\n".format(locus)
+            note += "?* {}: Imperfect hit, ST can not be trusted!\n".format(locus)
             st_marks = ["?","*"]
         elif "?" in allele:
-            note += "* {}: Uncertain hit, ST can not be trusted.\n".format(locus)
+            note += "? {}: Uncertain hit, ST can not be trusted.\n".format(locus)
             st_marks.append("?")
         elif "*" in allele:
-            note += "* {}: Novel allele, ST indicates nearest ST.\n".format(locus)
+            note += "* {}: Novel allele, ST may indicate nearest ST.\n".format(locus)
             st_marks.append("*")
 
         # Remove mark from allele so it can be used to look up nearest st types
@@ -164,7 +162,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
         # Get all st's that have the alleles in it's allele profile
         st_hits += st_profiles[locus].get(allele, ["None"])
         if "alternative_hit" in allele_matches[locus] and allele_matches[locus]["alternative_hit"] != {}:
-            note += "* {}: More perfect hits found".format(locus)
+            note += "! {}: Multiple perfect hits found\n".format(locus)
             st_marks.append("!")
             for allele_name, hit_info in allele_matches[locus]["alternative_hit"].items():
                 allele = hit_info["allele"].rstrip("!")
@@ -175,13 +173,13 @@ def st_typing(st_profiles, allele_matches, loci_list):
     notes = st_mark
     # Add marks information to notes
     if "!" in st_mark:
-        notes += " allele with more perfect hits identified, more sequence types might be found\n"
+        notes += " alleles with multiple perfect hits found, multiple STs might be found\n"
     if "*" in st_mark and "?" in st_mark:
         notes += " alleles with less than 100% identity and 100% coverages found\n"
     elif st_mark == "*":
         notes = st_mark + " alleles with less than 100% identity found\n"
     elif st_mark == "?":
-        notes = st_mark + " alleles with less than 100% coverages found\n"
+        notes = st_mark + " alleles with less than 100% coverage found\n"
     notes += note
 
     # Find most frequent st in st_hits
@@ -218,7 +216,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
         #st = best_hit + st_mark
         nearest_sts = ""
 
-    return st, note, nearest_sts
+    return st, notes, nearest_sts
 
 def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, sbjct_aligns):
     for locus, locus_info in allele_matches.items():        
