@@ -4,10 +4,11 @@ import os, sys, re, time, pprint, io, shutil
 import argparse, subprocess
 
 from cgecore.alignment import extended_cigar
-from cgecore.blaster import Blaster
+from cgecore.blaster.blaster import Blaster
 from cgecore.cgefinder import CGEFinder
 import json, gzip
 from tabulate import tabulate
+
 
 def get_read_filename(infiles):
     ''' Infiles must be a list with 1 or 2 input files.
@@ -42,6 +43,22 @@ def get_read_filename(infiles):
 
     return sample_name.rstrip("-").rstrip("_")
 
+def is_gzipped(file_path):
+    ''' Returns True if file is gzipped and False otherwise.
+        The result is inferred from the first two bits in the file read
+        from the input path.
+        On unix systems this should be: 1f 8b
+        Theoretically there could be exceptions to this test but it is
+        unlikely and impossible if the input files are otherwise expected
+        to be encoded in utf-8.
+    '''
+    with open(file_path, mode='rb') as fh:
+        bit_start = fh.read(2)
+    if(bit_start == b'\x1f\x8b'):
+        return True
+    else:
+        return False
+
 def get_file_format(input_files):
     """
     Takes all input files and checks their first character to assess
@@ -54,8 +71,9 @@ def get_file_format(input_files):
 
     # Open all input files and get the first character
     file_format = []
+    invalid_files = []
     for infile in input_files:
-        if infile[-3:] == ".gz":
+        if is_gzipped(infile):#[-3:] == ".gz":
             f = gzip.open(infile, "rb")
             fst_char = f.read(1);
         else:
@@ -109,7 +127,7 @@ def import_profile(database, species, loci_list):
 
 def st_typing(st_profiles, allele_matches, loci_list):
     """
-    Takes the path to a pickled dictionary, the inp list of the allele 
+    Takes the path to a dictionary, the inp list of the allele 
     number that each loci has been assigned, and an output file string
     where the found st type and similaity is written into it.  
     """
@@ -129,30 +147,40 @@ def st_typing(st_profiles, allele_matches, loci_list):
  
         # Check if allele is marked as a non-perfect match. Save mark and write note.
         if "?*" in allele:
-            note += "* {}: Completely imperfect hit, ST can not be trusted!\n".format(locus)
+            note += "?* {}: Imperfect hit, ST can not be trusted!\n".format(locus)
             st_marks = ["?","*"]
         elif "?" in allele:
-            note += "* {}: Uncertain hit, ST can not be trusted.\n".format(locus)
+            note += "? {}: Uncertain hit, ST can not be trusted.\n".format(locus)
             st_marks.append("?")
         elif "*" in allele:
-            note += "* {}: Novel allele, ST indicates nearest ST.\n".format(locus)
+            note += "* {}: Novel allele, ST may indicate nearest ST.\n".format(locus)
             st_marks.append("*")
 
         # Remove mark from allele so it can be used to look up nearest st types
-        allele = allele.rstrip("*?")
+        allele = allele.rstrip("*?!")
 
         # Get all st's that have the alleles in it's allele profile
         st_hits += st_profiles[locus].get(allele, ["None"])
+        if "alternative_hit" in allele_matches[locus] and allele_matches[locus]["alternative_hit"] != {}:
+            note += "! {}: Multiple perfect hits found\n".format(locus)
+            st_marks.append("!")
+            for allele_name, hit_info in allele_matches[locus]["alternative_hit"].items():
+                allele = hit_info["allele"].rstrip("!")
+                st_hits += st_profiles[locus].get(allele, ["None"])
 
     # Save allele marks to be transfered to the ST
     st_mark = "".join(set(st_marks))
+    notes = st_mark
     # Add marks information to notes
-    if len(st_mark) == 2:
-        note = st_mark + " alleles with less than 100% identity and 100% coverages found\n" + note
+    if "!" in st_mark:
+        notes += " alleles with multiple perfect hits found, multiple STs might be found\n"
+    if "*" in st_mark and "?" in st_mark:
+        notes += " alleles with less than 100% identity and 100% coverages found\n"
     elif st_mark == "*":
-        note = st_mark + " alleles with less than 100% identity found\n" + note
+        notes = st_mark + " alleles with less than 100% identity found\n"
     elif st_mark == "?":
-        note = st_mark + " alleles with less than 100% coverages found\n" + note
+        notes = st_mark + " alleles with less than 100% coverage found\n"
+    notes += note
 
     # Find most frequent st in st_hits
     st_hits_counter = {}
@@ -181,11 +209,14 @@ def st_typing(st_profiles, allele_matches, loci_list):
             nearest_sts.append(st_hit)
         nearest_sts = ",".join(nearest_sts) #+ st_mark
     else:
-        # allele profile has a perfect ST hit but the st marks given to the alleles might indicate imperfect hits 
-        st = best_hit + st_mark
+        # allele profile has a perfect ST hit but the st marks given to the alleles might indicate imperfect hits
+        sts = [st for st, no in st_hits_counter.items() if no == max_count]
+        #if len(sts) > 1:
+        st = "{},".format(st_mark).join(sts) + st_mark 
+        #st = best_hit + st_mark
         nearest_sts = ""
 
-    return st, note, nearest_sts
+    return st, notes, nearest_sts
 
 def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, sbjct_aligns):
     for locus, locus_info in allele_matches.items():        
@@ -194,15 +225,34 @@ def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, s
             continue
         hit_name = locus_info["hit_name"]
 
-        query_seq = query_aligns[species][hit_name]
-        homol_seq = homol_aligns[species][hit_name]
-        sbjct_seq = sbjct_aligns[species][hit_name]
+        seqs = ["","",""]
+        seqs[0] = sbjct_aligns[species][hit_name]    
+        seqs[1] = homol_aligns[species][hit_name]    
+        seqs[2] = query_aligns[species][hit_name]
 
-        file_handle.write("# {}".format(allele_name) + "\n")
-        for i in range(0,len(query_seq),60):
-            file_handle.write("%-10s\t%s\n"%("template:", sbjct_seq[i:i+60]))
-            file_handle.write("%-10s\t%s\n"%("", homol_seq[i:i+60]))
-            file_handle.write("%-10s\t%s\n\n"%("query:", query_seq[i:i+60]))
+        write_align(seqs, allele_name, file_handle)
+
+
+        # write alternative seq
+        if "alternative_hit" in locus_info:
+            for allele_name in locus_info["alternative_hit"]:
+                hit_name = locus_info["alternative_hit"][allele_name]["hit_name"]
+                seqs = ["","",""]
+                seqs[0] = sbjct_aligns[species][hit_name]    
+                seqs[1] = homol_aligns[species][hit_name]    
+                seqs[2] = query_aligns[species][hit_name]
+
+                write_align(seqs, allele_name, file_handle)
+
+def write_align(seq, seq_name, file_handle):
+    file_handle.write("# {}".format(seq_name) + "\n")
+    sbjct_seq = seq[0]
+    homol_seq = seq[1]
+    query_seq = seq[2]
+    for i in range(0,len(sbjct_seq),60):
+        file_handle.write("%-10s\t%s\n"%("template:", sbjct_seq[i:i+60]))
+        file_handle.write("%-10s\t%s\n"%("", homol_seq[i:i+60]))
+        file_handle.write("%-10s\t%s\n\n"%("query:", query_seq[i:i+60]))
 
 def text_table(headers, rows, empty_replace='-'):
    ''' Create text table
@@ -282,8 +332,8 @@ tmp_dir = os.path.abspath(args.tmp_dir)
 method_path = args.method_path
 extented_output = args.extented_output
 
-min_cov = 0.6   # args.coverage
-threshold = 0.9 # args.identity
+min_cov = 0.6	   # args.coverage
+threshold = 0.95 # args.identity
 
 # Check file format (fasta, fastq or other format)
 file_format = get_file_format(infile)
@@ -375,7 +425,7 @@ for hit, locus_hit in results[species].items():
     identity  = float(locus_hit["perc_ident"])
     score     = float(locus_hit["cal_score"])
     gaps      = int(locus_hit["gaps"])    
-    align_len   = locus_hit["HSP_length"]
+    align_len = locus_hit["HSP_length"]
     sbj_len   = int(locus_hit["sbjct_length"])
     sbjct_seq = locus_hit["sbjct_string"]
     query_seq = locus_hit["query_string"] 
@@ -384,12 +434,19 @@ for hit, locus_hit in results[species].items():
 
     # Check for perfect hits
     if coverage == 100 and identity == 100:
-        # Overwrite alleles already saved, save the perfect match and break to go to next locus
-        allele_matches[locus] = {"score":score, "allele":allele, "coverage":coverage,
-                                 "identity":identity, "match_priority": 1, "align_len":align_len,
-                                 "gaps":gaps, "sbj_len":sbj_len, "allele_name":allele_name,
-                                 "sbjct_seq":sbjct_seq, "query_seq":query_seq, "homol_seq":homol_seq, 
-                                 "hit_name":hit, "cigar":cigar} 
+        # If a perfect hit was already found the list more_perfect hits will exist this new hit is appended to this list
+        try:
+            allele_matches[locus]["alternative_hit"][allele_name] = {"allele":allele+"!", "align_len":align_len, "sbj_len":sbj_len, 
+                                                                 "coverage":coverage, "identity":identity, "hit_name":hit}
+            if allele_matches[locus]["allele"][-1] != "!":
+                allele_matches[locus]["allele"] += "!"
+        except KeyError:
+            # Overwrite alleles already saved, save the perfect match and break to go to next locus
+            allele_matches[locus] = {"score":score, "allele":allele, "coverage":coverage,
+                                     "identity":identity, "match_priority": 1, "align_len":align_len,
+                                     "gaps":gaps, "sbj_len":sbj_len, "allele_name":allele_name,
+                                     "sbjct_seq":sbjct_seq, "query_seq":query_seq, "homol_seq":homol_seq, 
+                                     "hit_name":hit, "cigar":cigar, "alternative_hit":{}} 
     else:
         # If no hit has yet been stored initialize dict variables that are looked up below
         if locus not in allele_matches:
@@ -440,11 +497,11 @@ time = time.strftime("%H:%M:%S")
 data = {service:{}}
 allele_results = {}
 for locus, locus_info in allele_matches.items():
-    allele_results[locus] = {}
+    allele_results[locus] = {"identity":0, "coverage":0, "allele":[], "allele_name":[], "align_len":[], "gaps":0, "sbj_len":[]}
     for (key, value) in locus_info.items():
-        if key in ["identity", "coverage", "allele", "allele_name", "align_len", "gaps", "sbj_len"]:
+        if key in allele_results[locus] or (key == "alternative_hit" and value != {}):
             allele_results[locus][key] = value
-
+ 
 userinput = {"filename":args.infile, "species":args.species, "organism":organism,"file_format":file_format}
 run_info = {"date":date, "time":time}#, "database":{"remote_db":remote_db, "last_commit_hash":head_hash}}
 server_results = {"sequence_type":st, "allele_profile": allele_results,
@@ -498,23 +555,28 @@ if extented_output:
 
         # Write alleles names with indications of imperfect hits
         if allele_name != "No hit found":
-            allele_name_w_mark = locus+"_"+allele
+            allele_name_w_mark = locus + "_" + allele
         else:
             allele_name_w_mark = allele_name          
         
         # Write allele results to tsv table
         row = [locus, identity, coverage, align_len, sbj_len, gaps, allele_name_w_mark]
         rows.append(row)
+        if "alternative_hit" in allele_info:
+            for allele_name, dic in allele_info["alternative_hit"].items():
+                row = [locus, identity, coverage, str(dic["align_len"]), str(dic["sbj_len"]), "0", allele_name + "!"]
+                rows.append(row)                
         #
 
         if allele_name == "No hit found":
             continue
 
         # Write query fasta output
-        query_seq = allele_info["query_seq"]
-        sbjct_seq = allele_info["sbjct_seq"] 
-        homol_seq = allele_info["homol_seq"]
-        
+        hit_name = allele_info["hit_name"]
+        query_seq = query_aligns[species][hit_name]
+        sbjct_seq = sbjct_aligns[species][hit_name] 
+        homol_seq = homol_aligns[species][hit_name]
+
         if allele_info["match_priority"] == 1:
             match = "PERFECT MATCH"
         else:
@@ -523,15 +585,32 @@ if extented_output:
                                                   allele_info["coverage"], allele_info["allele_name"])
         query_file.write(header)
         for i in range(0,len(query_seq),60):
-            #print(query_seq[i:i+70])
             query_file.write(query_seq[i:i+60] + "\n")
 
         # Write template fasta output
         header = ">{}\n".format(allele_info["allele_name"])
         sbjct_file.write(header)
         for i in range(0,len(sbjct_seq),60):
-            #print(sbjct_seq[i:i+70])
             sbjct_file.write(sbjct_seq[i:i+60] + "\n")
+
+        if "alternative_hit" in allele_info:
+            for allele_name in allele_info["alternative_hit"]:
+                header = ">{}:{} ID:{}% COV:{}% Best_match:{}\n".format(locus, "PERFECT MATCH", 100, 
+                                                                        100, allele_name)
+                hit_name = allele_info["alternative_hit"][allele_name]["hit_name"]
+                query_seq = query_aligns[species][hit_name]
+                sbjct_seq = sbjct_aligns[species][hit_name] 
+                homol_seq = homol_aligns[species][hit_name]
+                query_file.write(header)
+                for i in range(0,len(query_seq),60):
+                    query_file.write(query_seq[i:i+60] + "\n")
+
+                # Write template fasta output
+                header = ">{}\n".format(allele_name)
+                sbjct_file.write(header)
+                for i in range(0,len(sbjct_seq),60):
+                    sbjct_file.write(sbjct_seq[i:i+60] + "\n")
+            
 
     # Write Allele profile results tables in results file and table file
     rows.sort(key=lambda x: x[0])
