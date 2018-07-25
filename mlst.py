@@ -315,7 +315,7 @@ parser.add_argument("-q", "--quiet", action="store_true")
 args = parser.parse_args()
 
 if args.quiet:
-    f = open('nul', 'w')
+    f = open('/dev/null', 'w')
     sys.stdout = f
     
 
