@@ -404,10 +404,12 @@ homol_aligns = method_obj.gene_align_homo
 sbjct_aligns = method_obj.gene_align_sbjct
 
 # Check that the results dict is not empty
+warning = ""
 if results[species] == "No hit found":
-    sys.exit("Non of the MLST loci was found in the input data. \
-              Make sure that the correct MLST scheme was chosen, \
-              or check the quality of the sequencing/assembled data")
+   results[species] = {}
+   warning = ("No MLST loci was found in the input data, "
+              "make sure that the correct MLST scheme was chosen.")
+
 
 allele_matches = {}
 
@@ -481,11 +483,15 @@ for locus in loci_list:
         allele_matches[locus] = {"identity":"", "coverage":"", "allele":"", "allele_name":"No hit found", "align_len":"", "gaps":"", "sbj_len":""}
 
 # Import all possible st profiles into dict
-st_profiles = import_profile(database, species,loci_list)
+st_profiles = import_profile(database, species, loci_list)
 
 # Find st or neatest sts
 st, note, nearest_sts = st_typing(st_profiles, allele_matches, loci_list)
-    
+
+# Give warning of mlst schene if no loci were found
+if note == "" and warning != "":
+   note = warning
+
 # Get run info for JSON file
 service = os.path.basename(__file__).replace(".py", "")
 date = time.strftime("%d.%m.%Y")
