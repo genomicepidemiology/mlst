@@ -32,7 +32,7 @@ def get_read_filename(infiles):
     for i in range(len(seq_file)):
         if seq_file_2[i] == seq_file[i]:
             sample_name += seq_file[i]
-        else: 
+        else:
             break
     if sample_name == "":
         sys.error("Input error: sample names of input files, {} and {}, \
@@ -62,8 +62,8 @@ def is_gzipped(file_path):
 def get_file_format(input_files):
     """
     Takes all input files and checks their first character to assess
-    the file format. Returns one of the following strings; fasta, fastq, 
-    other or mixed. fasta and fastq indicates that all input files are 
+    the file format. Returns one of the following strings; fasta, fastq,
+    other or mixed. fasta and fastq indicates that all input files are
     of the same format, either fasta or fastq. other indiates that all
     files are not fasta nor fastq files. mixed indicates that the inputfiles
     are a mix of different file formats.
@@ -93,21 +93,21 @@ def get_file_format(input_files):
 
 def import_profile(database, species, loci_list):
     """Import all possible allele profiles with corresponding st's
-    for the species into a dict. The profiles are stored in a dict 
-    of dicts, to easily look up what st types are accosiated with 
-    a specific allele number of each loci. 
+    for the species into a dict. The profiles are stored in a dict
+    of dicts, to easily look up what st types are accosiated with
+    a specific allele number of each loci.
     """
     # Open allele profile file from database
     profile_file = open("{0}/{1}/{1}.tsv".format(database, species), "r")
     profile_header = profile_file.readline().strip().split("\t")[1:len(loci_list)+1]
-    
+
     # Create dict for looking up st-types with locus/allele combinations
     st_profiles = {}
     # For each locus initate make an inner dict to store allele and st's
     for locus in loci_list:
-        st_profiles[locus] = {} 
+        st_profiles[locus] = {}
 
-    # Fill inner dict with allele no as key and st-types seen with the allele as value   
+    # Fill inner dict with allele no as key and st-types seen with the allele as value
     for line in profile_file:
         profile = line.strip().split("\t")
         st_name = profile[0]
@@ -127,9 +127,9 @@ def import_profile(database, species, loci_list):
 
 def st_typing(st_profiles, allele_matches, loci_list):
     """
-    Takes the path to a dictionary, the inp list of the allele 
+    Takes the path to a dictionary, the inp list of the allele
     number that each loci has been assigned, and an output file string
-    where the found st type and similaity is written into it.  
+    where the found st type and similaity is written into it.
     """
 
     # Find best ST type for all allele profiles
@@ -144,7 +144,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
     # Check the quality of the alle hits
     for locus in allele_matches:
         allele = allele_matches[locus]["allele"]
- 
+
         # Check if allele is marked as a non-perfect match. Save mark and write note.
         if "?*" in allele:
             note += "?* {}: Imperfect hit, ST can not be trusted!\n".format(locus)
@@ -212,22 +212,22 @@ def st_typing(st_profiles, allele_matches, loci_list):
         # allele profile has a perfect ST hit but the st marks given to the alleles might indicate imperfect hits
         sts = [st for st, no in st_hits_counter.items() if no == max_count]
         #if len(sts) > 1:
-        st = "{},".format(st_mark).join(sts) + st_mark 
+        st = "{},".format(st_mark).join(sts) + st_mark
         #st = best_hit + st_mark
         nearest_sts = ""
 
     return st, notes, nearest_sts
 
 def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, sbjct_aligns):
-    for locus, locus_info in allele_matches.items():        
+    for locus, locus_info in allele_matches.items():
         allele_name = locus_info["allele_name"]
         if allele_name == "No hit found":
             continue
         hit_name = locus_info["hit_name"]
 
         seqs = ["","",""]
-        seqs[0] = sbjct_aligns[species][hit_name]    
-        seqs[1] = homol_aligns[species][hit_name]    
+        seqs[0] = sbjct_aligns[species][hit_name]
+        seqs[1] = homol_aligns[species][hit_name]
         seqs[2] = query_aligns[species][hit_name]
 
         write_align(seqs, allele_name, file_handle)
@@ -238,8 +238,8 @@ def make_aln(species, file_handle, allele_matches, query_aligns, homol_aligns, s
             for allele_name in locus_info["alternative_hit"]:
                 hit_name = locus_info["alternative_hit"][allele_name]["hit_name"]
                 seqs = ["","",""]
-                seqs[0] = sbjct_aligns[species][hit_name]    
-                seqs[1] = homol_aligns[species][hit_name]    
+                seqs[0] = sbjct_aligns[species][hit_name]
+                seqs[1] = homol_aligns[species][hit_name]
                 seqs[2] = query_aligns[species][hit_name]
 
                 write_align(seqs, allele_name, file_handle)
@@ -256,7 +256,7 @@ def write_align(seq, seq_name, file_handle):
 
 def text_table(headers, rows, empty_replace='-'):
    ''' Create text table
-   
+
    USAGE:
       >>> from tabulate import tabulate
       >>> headers = ['A','B']
@@ -317,7 +317,7 @@ args = parser.parse_args()
 if args.quiet:
     f = open('/dev/null', 'w')
     sys.stdout = f
-    
+
 
 #TODO what are the clonal complex data used for??
 
@@ -355,7 +355,7 @@ for line in config_file:
 if species not in species_list:
     sys.exit("{}, is not a valid species. \n\nPlease choose a species available in the database:\n{}".format(species, ", ".join(species_list)))
 
-# Call appropriate method (kma or blastn) based on file format 
+# Call appropriate method (kma or blastn) based on file format
 if file_format == "fastq":
     if not method_path:
         method_path = "kma"
@@ -372,7 +372,7 @@ if file_format == "fastq":
         sys.exit("Only 2 input file accepted for raw read data,\
                   if data from more runs is avaliable for the same\
                   sample, please concatinate the reads into two files")
-    
+
     sample_name = get_read_filename(infile)
     method = "kma"
 
@@ -393,7 +393,7 @@ elif file_format == "fasta":
     method = "blast"
 
     # Call BLASTn
-    method_obj = Blaster(infile, [species], db_path, tmp_dir, 
+    method_obj = Blaster(infile, [species], db_path, tmp_dir,
                          min_cov, threshold, method_path, cut_off=False)
 else:
     sys.exit("Input file must be fastq or fasta format, not "+ file_format)
@@ -426,19 +426,19 @@ for hit, locus_hit in results[species].items():
     coverage  = float(locus_hit["perc_coverage"])
     identity  = float(locus_hit["perc_ident"])
     score     = float(locus_hit["cal_score"])
-    gaps      = int(locus_hit["gaps"])    
+    gaps      = int(locus_hit["gaps"])
     align_len = locus_hit["HSP_length"]
     sbj_len   = int(locus_hit["sbjct_length"])
     sbjct_seq = locus_hit["sbjct_string"]
-    query_seq = locus_hit["query_string"] 
+    query_seq = locus_hit["query_string"]
     homol_seq = locus_hit["homo_string"]
-    cigar     = extended_cigar(sbjct_aligns[species][hit], query_aligns[species][hit]) 
+    cigar     = extended_cigar(sbjct_aligns[species][hit], query_aligns[species][hit])
 
     # Check for perfect hits
     if coverage == 100 and identity == 100:
         # If a perfect hit was already found the list more_perfect hits will exist this new hit is appended to this list
         try:
-            allele_matches[locus]["alternative_hit"][allele_name] = {"allele":allele+"!", "align_len":align_len, "sbj_len":sbj_len, 
+            allele_matches[locus]["alternative_hit"][allele_name] = {"allele":allele+"!", "align_len":align_len, "sbj_len":sbj_len,
                                                                  "coverage":coverage, "identity":identity, "hit_name":hit}
             if allele_matches[locus]["allele"][-1] != "!":
                 allele_matches[locus]["allele"] += "!"
@@ -447,8 +447,8 @@ for hit, locus_hit in results[species].items():
             allele_matches[locus] = {"score":score, "allele":allele, "coverage":coverage,
                                      "identity":identity, "match_priority": 1, "align_len":align_len,
                                      "gaps":gaps, "sbj_len":sbj_len, "allele_name":allele_name,
-                                     "sbjct_seq":sbjct_seq, "query_seq":query_seq, "homol_seq":homol_seq, 
-                                     "hit_name":hit, "cigar":cigar, "alternative_hit":{}} 
+                                     "sbjct_seq":sbjct_seq, "query_seq":query_seq, "homol_seq":homol_seq,
+                                     "hit_name":hit, "cigar":cigar, "alternative_hit":{}}
     else:
         # If no hit has yet been stored initialize dict variables that are looked up below
         if locus not in allele_matches:
@@ -507,7 +507,7 @@ for locus, locus_info in allele_matches.items():
     for (key, value) in locus_info.items():
         if key in allele_results[locus] or (key == "alternative_hit" and value != {}):
             allele_results[locus][key] = value
- 
+
 userinput = {"filename":args.infile, "species":args.species, "organism":organism,"file_format":file_format}
 run_info = {"date":date, "time":time}#, "database":{"remote_db":remote_db, "last_commit_hash":head_hash}}
 server_results = {"sequence_type":st, "allele_profile": allele_results,
@@ -517,15 +517,15 @@ data[service]["user_input"] = userinput
 data[service]["run_info"] = run_info
 data[service]["results"] = server_results
 
-pprint.pprint(data)
+print(json.dumps(data, indent=4))
 
 # Save json output
-result_file = "{}/data.json".format(outdir) 
-with open(result_file, "w") as outfile:  
+result_file = "{}/data.json".format(outdir)
+with open(result_file, "w") as outfile:
     json.dump(data, outfile)
 
 if extented_output:
-    # Define extented output 
+    # Define extented output
     table_filename  = "{}/results_tab.tsv".format(outdir)
     query_filename  = "{}/Hit_in_genome_seq.fsa".format(outdir)
     sbjct_filename  = "{}/MLST_allele_seq.fsa".format(outdir)
@@ -563,15 +563,15 @@ if extented_output:
         if allele_name != "No hit found":
             allele_name_w_mark = locus + "_" + allele
         else:
-            allele_name_w_mark = allele_name          
-        
+            allele_name_w_mark = allele_name
+
         # Write allele results to tsv table
         row = [locus, identity, coverage, align_len, sbj_len, gaps, allele_name_w_mark]
         rows.append(row)
         if "alternative_hit" in allele_info:
             for allele_name, dic in allele_info["alternative_hit"].items():
                 row = [locus, identity, coverage, str(dic["align_len"]), str(dic["sbj_len"]), "0", allele_name + "!"]
-                rows.append(row)                
+                rows.append(row)
         #
 
         if allele_name == "No hit found":
@@ -580,14 +580,14 @@ if extented_output:
         # Write query fasta output
         hit_name = allele_info["hit_name"]
         query_seq = query_aligns[species][hit_name]
-        sbjct_seq = sbjct_aligns[species][hit_name] 
+        sbjct_seq = sbjct_aligns[species][hit_name]
         homol_seq = homol_aligns[species][hit_name]
 
         if allele_info["match_priority"] == 1:
             match = "PERFECT MATCH"
         else:
             match = "WARNING"
-        header = ">{}:{} ID:{}% COV:{}% Best_match:{}\n".format(locus, match, allele_info["identity"], 
+        header = ">{}:{} ID:{}% COV:{}% Best_match:{}\n".format(locus, match, allele_info["identity"],
                                                   allele_info["coverage"], allele_info["allele_name"])
         query_file.write(header)
         for i in range(0,len(query_seq),60):
@@ -601,11 +601,11 @@ if extented_output:
 
         if "alternative_hit" in allele_info:
             for allele_name in allele_info["alternative_hit"]:
-                header = ">{}:{} ID:{}% COV:{}% Best_match:{}\n".format(locus, "PERFECT MATCH", 100, 
+                header = ">{}:{} ID:{}% COV:{}% Best_match:{}\n".format(locus, "PERFECT MATCH", 100,
                                                                         100, allele_name)
                 hit_name = allele_info["alternative_hit"][allele_name]["hit_name"]
                 query_seq = query_aligns[species][hit_name]
-                sbjct_seq = sbjct_aligns[species][hit_name] 
+                sbjct_seq = sbjct_aligns[species][hit_name]
                 homol_seq = homol_aligns[species][hit_name]
                 query_file.write(header)
                 for i in range(0,len(query_seq),60):
@@ -616,7 +616,7 @@ if extented_output:
                 sbjct_file.write(header)
                 for i in range(0,len(sbjct_seq),60):
                     sbjct_file.write(sbjct_seq[i:i+60] + "\n")
-            
+
 
     # Write Allele profile results tables in results file and table file
     rows.sort(key=lambda x: x[0])
