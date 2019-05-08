@@ -306,6 +306,11 @@ parser.add_argument("-x", "--extented_output",
                     help="Give extented output with allignment files, template and query hits in fasta and\
                           a tab seperated file with allele profile results", action="store_true")
 parser.add_argument("-q", "--quiet", action="store_true")
+parser.add_argument("-matrix", "--matrix",
+                    help="Gives the counts all all called bases at each\
+                          position in each mapped template. Columns are: reference\
+                          base, A count, C count, G count, T count, N count,\
+                          - count.", dest="kma_matrix", action='store_true', default=False)
 
 
 #parser.add_argument("-c", "--coverage",
@@ -341,6 +346,11 @@ file_format = get_file_format(infile)
 db_path = "{}/{}/".format(database, species)
 
 config_file = open(database + "/config","r")
+
+if (args.kma_matrix):
+    extra_args = "-matrix"
+else:
+    extra_args = None
 
 # Get loci list from config file
 species_list = []
@@ -380,7 +390,8 @@ if file_format == "fastq":
     method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
                                 threshold=threshold, kma_path=method_path, sample_name=sample_name,
                                 inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
-                                kma_gapextend=-1, kma_penalty=-3, kma_reward=1)
+                                kma_gapextend=-1, kma_penalty=-3, kma_reward=1,
+                                kma_add_args=extra_args)
 
 elif file_format == "fasta":
     if not method_path:
