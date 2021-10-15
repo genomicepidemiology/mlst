@@ -311,6 +311,11 @@ parser.add_argument("-matrix", "--matrix",
                           position in each mapped template. Columns are: reference\
                           base, A count, C count, G count, T count, N count,\
                           - count.", dest="kma_matrix", action='store_true', default=False)
+parser.add_argument("-nano", "--nanopore",
+                        action="store_true",
+                        dest="nanopore",
+                        help="If nanopore data is used",
+                        default=False)
 
 
 #parser.add_argument("-c", "--coverage",
@@ -387,11 +392,22 @@ if file_format == "fastq":
     method = "kma"
 
     # Call KMA
-    method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
-                                threshold=threshold, kma_path=method_path, sample_name=sample_name,
-                                inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
-                                kma_gapextend=-1, kma_penalty=-3, kma_reward=1,
-                                kma_add_args=extra_args)
+    if args.nanopore:
+        if extra_args != None:
+            extra_args += ' -ont -md 5'
+        else:
+            extra_args = '-ont -md 5'
+        method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
+                                   threshold=threshold, kma_path=method_path, sample_name=sample_name,
+                                   inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
+                                   kma_gapextend=-1, kma_penalty=-3, kma_reward=1,
+                                   kma_add_args=extra_args)
+    else:
+        method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
+                                   threshold=threshold, kma_path=method_path, sample_name=sample_name,
+                                   inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
+                                   kma_gapextend=-1, kma_penalty=-3, kma_reward=1,
+                                   kma_add_args=extra_args)
 
 elif file_format == "fasta":
     if not method_path:
