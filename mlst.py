@@ -399,9 +399,7 @@ if file_format == "fastq":
             extra_args = '-ont -md 5'
         method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
                                    threshold=threshold, kma_path=method_path, sample_name=sample_name,
-                                   inputfile_2=infile_2, kma_mrs=0.75, kma_gapopen=-5,
-                                   kma_gapextend=-1, kma_penalty=-3, kma_reward=1,
-                                   kma_add_args=extra_args)
+                                   inputfile_2=infile_2, kma_add_args=extra_args)
     else:
         method_obj = CGEFinder.kma(infile_1, outdir, [species], db_path, min_cov=min_cov,
                                    threshold=threshold, kma_path=method_path, sample_name=sample_name,
