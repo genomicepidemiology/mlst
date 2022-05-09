@@ -187,7 +187,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
     max_count = 0
     best_hit = ""
     for hit in st_hits:
-        if hit is not "None":
+        if hit != "None":
             if hit in st_hits_counter:
                 st_hits_counter[hit] += 1
             else:
@@ -312,7 +312,9 @@ parser.add_argument("-matrix", "--matrix",
                           base, A count, C count, G count, T count, N count,\
                           - count.", dest="kma_matrix", action='store_true', default=False)
 parser.add_argument("-d", "--depth",
-                    help="The minimum required depth for a gene to be considered", default=5)
+                    help="The minimum required depth for a gene to be considered",
+                    type=float,
+                    default=5.0)
 
 
 #parser.add_argument("-c", "--coverage",
@@ -339,7 +341,6 @@ tmp_dir = os.path.abspath(args.tmp_dir)
 method_path = args.method_path
 extented_output = args.extented_output
 
-min_depth = float(args.depth)
 min_cov = 0.6	   # args.coverage
 threshold = 0.95 # args.identity
 
@@ -451,9 +452,9 @@ for hit, locus_hit in results[species].items():
 
 
     # Check for required depth
-    if min_depth > depth:
+    if args.depth > depth:
         continue
-    print(allele_name, depth)
+
     # Check for perfect hits
     if coverage == 100 and identity == 100:
         # If a perfect hit was already found the list more_perfect hits will exist this new hit is appended to this list
