@@ -448,8 +448,11 @@ for hit, locus_hit in results[species].items():
     query_seq = locus_hit["query_string"]
     homol_seq = locus_hit["homo_string"]
     cigar     = extended_cigar(sbjct_aligns[species][hit], query_aligns[species][hit])
-    depth     = float(locus_hit["depth"])
 
+    if file_format == "fastq":
+        depth = float(locus_hit["depth"])
+    else:
+        depth = args.depth
 
     # Check for required depth
     if args.depth > depth:
