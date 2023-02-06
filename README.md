@@ -94,10 +94,14 @@ When running the docker file you have to mount 2 directory:
 Here we mount the current working directory (using $pwd) and use this as the output directory,
 the input file should be reachable from this directory as well.
 
--i INPUTFILE   input file (fasta or fastq) relative to pwd \
--s SPECIES 	species origin of input file  \
--o OUTDIR	outpur directory relative to pwd \
--x 		extended output. Will create an extented output \
+-i INPUTFILE   input file (fasta or fastq) relative to pwd.
+
+-s SPECIES 	species origin of input file.
+
+-o OUTDIR	outpur directory relative to pwd.
+
+-x 		extended output. Will create an extented output.
+
 -st     save temp_folder. Will save the temporary folder.
 
 ## Web-server
