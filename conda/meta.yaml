@@ -1,0 +1,32 @@
+package:
+  name: mlst
+  version: 2.0.9
+
+source:
+  url: https://bitbucket.org/genomicepidemiology/MLST/get/2.0.9.tar.gz
+
+build:
+  number: 0
+  noarch: python
+
+requirements:
+  host:
+    - python>=3.5
+    - kma
+    - wget
+  run:
+    - python>=3.5
+    - kma
+    - biopython
+    - tabulate
+    - cgecore
+    - blast
+
+test:
+  commands:
+    - mlst.py -h | grep mlst.py >/dev/null
+
+about:
+  home: https://bitbucket.org/genomicepidemiology/MLST
+  summary: 'The MLST service contains one python script mlst.py which is the script of the lates version of the MLST service. The method enables investigators to determine the ST based on WGS data.'
+  license: Apache-2.0
