@@ -18,8 +18,8 @@ requirements:
     - python>=3.5
     - kma
     - biopython
-    - tabulate=0.7.7
-    - cgecore=1.5.5
+    - tabulate>=0.7.7
+    - cgecore>=1.5.5
     - blast
 
 test:
